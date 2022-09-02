@@ -24,6 +24,7 @@ const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
     }
     trigger(url, message);
 }
+
 const getSingleImageUrl = (imgData: any) => {
     let x = imgData.graphql.shortcode_media.display_url
     return [x];
@@ -40,7 +41,8 @@ const getCaroselMedia = async (caroselData: any) => {
         return item.node.isVideo ? item.node.video_url : item.node.display_url
     })
     return urls;
-};
+}
+
 const getLinks = async (url: string, message: WAWebJS.Message) => {
     return axios.get(url).then((res: any) => {
         const isImage = res.data.graphql.shortcode_media.__typename === 'GraphImage'
@@ -56,8 +58,6 @@ const getLinks = async (url: string, message: WAWebJS.Message) => {
         else {
             return []
         }
-    }).catch((err: any) => {
-        // send.error(message);
     })
 
 }
@@ -89,29 +89,24 @@ const getIdFromUrl = (url: string) => {
 }
 
 const trigger = (url: string, message: WAWebJS.Message) => {
-    try {
-        if (isValidURL(url)) {
-            let id = getIdFromUrl(url);
-            let newUrl = createrlUrl(id);
-            getLinks(newUrl, message).then((res: []) => {
-                if (res.length == 0) {
-                    send.text(message, noMedia);
-                    return
-                }
-                res.forEach((item: string, i) => {
-                    setTimeout(async () => {
-                        await send.mediaUrl(message, item);
-                    }, i * 2000)
-                })
-            }).catch((err: any) => {
-                send.text(message, invalidUrl);
+    if (isValidURL(url)) {
+        let id = getIdFromUrl(url);
+        let newUrl = createrlUrl(id);
+        getLinks(newUrl, message).then((res: []) => {
+            if (res.length == 0) {
+                send.text(message, noMedia);
+                return
+            }
+            res.forEach((item: string, i) => {
+                setTimeout(async () => {
+                    await send.mediaUrl(message, item);
+                }, i * 2000)
             })
-        } else {
+        }).catch((err: any) => {
             send.text(message, invalidUrl);
-        }
-
-    } catch (error) {
-        send.error(message);
+        })
+    } else {
+        send.text(message, invalidUrl);
     }
 }
 

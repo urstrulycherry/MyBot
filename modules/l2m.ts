@@ -27,18 +27,12 @@ const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
 }
 
 const trigger = (url: string, message: WAWebJS.Message) => {
-    MessageMedia.fromUrl(url).then((media: MessageMedia) => {
-        message.reply(media).catch((err: any) => { })
-    }).catch((err: any) => {
-        send.text(message, noMedia);
-    })
+    send.mediaUrl(message, url)
 }
 const isValidURL = (s: string) => {
     try {
         let url = new URL(s);
         return true;
-        // if (url.hostname.includes("fbcdn.net")) { return true; }
-        // return false
     } catch (err) {
         return false;
     }

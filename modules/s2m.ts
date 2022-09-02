@@ -27,9 +27,8 @@ let process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
     quotedMsg.downloadMedia().then((media: MessageMedia) => {
         let buff = Buffer.from(media.data, "base64")
         if (isAnimated(buff)) {
-
         } else {
-            message.reply(media)
+            send.mediaMessage(message, media);
         }
     }).catch(() => {
         send.text(message, "catch-" + noSticker);

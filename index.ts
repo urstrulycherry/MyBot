@@ -3,7 +3,6 @@ import fs from 'fs';
 import { join } from "path";
 import qrcode from 'qrcode-terminal'
 
-
 let commands = new Map();
 const client: WAWebJS.Client = new Client({
     authStrategy: new LocalAuth(),
@@ -19,8 +18,9 @@ client.on('ready', () => {
             commands.set(module.name, module);
         }
     })
-    console.log('Client is ready!');
-});
+    console.log(`${client.info.wid._serialized} is ready!`);
+
+})
 
 client.on('qr', (qr: string) => {
     console.log('QR code:');
@@ -28,6 +28,7 @@ client.on('qr', (qr: string) => {
 })
 
 client.on('message_create', async (message: WAWebJS.Message) => {
+    // console.log(message.from);
     if (message.isStatus) return;
     if (message.body == '') return;
     let firstWord = message.body.split(' ')[0];
@@ -39,4 +40,6 @@ client.on('message_create', async (message: WAWebJS.Message) => {
     commands.get(firstWord).process(message, client);
 })
 
-client.initialize()
+client.initialize().catch((err: Error) => {
+    console.log(err);
+});

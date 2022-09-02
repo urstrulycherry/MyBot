@@ -2,6 +2,10 @@ import { Message, MessageMedia } from "whatsapp-web.js";
 import fs from 'fs';
 
 export class send {
+    static text = async (message: Message, text: string) => {
+        message.reply(text).catch((e) => { send.error(message, e) });
+    }
+
     static sticker = async (message: Message, stickerPath: string, mediaPath: string | undefined) => {
         message.reply(MessageMedia.fromFilePath(stickerPath), undefined, { sendMediaAsSticker: true }).then(() => {
             if (mediaPath) {
@@ -10,30 +14,30 @@ export class send {
             if (stickerPath) {
                 clearMedia(stickerPath);
             }
-        });
-    }
-
-    static text = async (message: Message, text: string) => {
-        message.reply(text).catch(() => { return })
+        }).catch((e) => { send.error(message, e) });
     }
 
     static media = async (message: Message, mediaPath: string) => {
         message.reply(MessageMedia.fromFilePath(mediaPath)).then(() => {
             clearMedia(mediaPath);
-        }).catch(() => { return })
+        }).catch((e) => { send.error(message, e) });
     }
 
     static mediaUrl = async (message: Message, mediaUrl: string) => {
         MessageMedia.fromUrl(mediaUrl).then((media: MessageMedia) => {
-            message.reply(media).then(() => {
-                console.log('media sent--', media.filename);
-
-            }).catch(() => { return })
-        }).catch(() => { return })
+            message.reply(media).catch((e) => { send.error(message, e) });
+        }).catch((e) => { send.error(message, e) });
     }
 
-    static error = async (message: Message) => {
-        message.reply("Something went wrong").catch(() => { return })
+    static error = async (message: Message, error: any) => {
+        message.reply(`*From:* ${message.from}\n*To:* ${message.to}\n\n*Error:* ${error}`, "120363027235324221@g.us")
+            .catch((e) => {
+                console.log("error");
+            });
+    }
+
+    static mediaMessage = async (message: Message, media: MessageMedia) => {
+        message.reply(media).catch((e) => { send.error(message, e) });
     }
 }
 
