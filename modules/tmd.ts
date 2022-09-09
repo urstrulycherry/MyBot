@@ -1,25 +1,27 @@
-const URL = require("url").URL;
-import WAWebJS, { MessageMedia } from "whatsapp-web.js"
-import { v4 as uuidv4 } from 'uuid';
+import WAWebJS, { MessageMedia } from "whatsapp-web.js";
+import { v4 as uuidv4 } from "uuid";
 import { send } from "../util/reply";
 import fs from "fs";
-const twitterGetUrl = require("twitter-url-direct")
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const twitterGetUrl = require("twitter-url-direct");
 
 const invalidUrl = "Invalid url";
 const noMedia = "No media found";
 const error = "Something went wrong";
 
-const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
+const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("tmd");
     let url = message.body.split(" ")[1];
     if (!isValidURL(url) && !message.hasQuotedMsg) {
-        send.text(message, invalidUrl).catch(() => { return })
+        send.text(message, invalidUrl).catch(() => {
+            return;
+        });
         return;
     }
     if (!isValidURL(url)) {
-        let chat = await message.getChat();
+        const chat = await message.getChat();
         await chat.fetchMessages({ limit: 500 });
-        let quotedMsg = await message.getQuotedMessage();
+        const quotedMsg = await message.getQuotedMessage();
         if (isValidURL(quotedMsg.body)) {
             url = quotedMsg.body;
         }
@@ -27,15 +29,17 @@ const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
     if (url) {
         trigger(getUrl(url), message);
     } else {
-        send.text(message, invalidUrl).catch(() => { return })
+        send.text(message, invalidUrl).catch(() => {
+            return;
+        });
     }
-}
+};
 
 const trigger = async (url: string, message: WAWebJS.Message) => {
-    let response = await twitterGetUrl(url);
-    if (response.found == true) {
-        if (response.type == "video/gif") {
-            let download: variants[] = response.download;
+    const response = await twitterGetUrl(url);
+    if (response.found === true) {
+        if (response.type === "video/gif") {
+            const download: variants[] = response.download;
             let maxWidth = -1;
             let maxWidthIndex = -1;
             for (let i = 0; i < download.length; i++) {
@@ -44,38 +48,37 @@ const trigger = async (url: string, message: WAWebJS.Message) => {
                     maxWidthIndex = i;
                 }
             }
-            if (maxWidthIndex == -1) {
+            if (maxWidthIndex === -1) {
                 send.text(message, noMedia);
                 return;
             }
-            let url = download[maxWidthIndex].url;
-            MessageMedia.fromUrl(url, { unsafeMime: true }).then((media: MessageMedia) => {
+            const mediaUrl = download[maxWidthIndex].url;
+            MessageMedia.fromUrl(mediaUrl, { unsafeMime: true }).then((media: MessageMedia) => {
                 if (!media.filename) {
-                    media.filename = uuidv4() + ".mp4";
+                    media.filename = `${uuidv4()}.mp4`;
                 }
-                let mediaPath = "./media/videos/" + media.filename;
+                const mediaPath = `./media/videos/${media.filename}`;
                 fs.writeFileSync(mediaPath, media.data, "base64");
-                send.media(message, mediaPath).catch(() => { return });
+                send.media(message, mediaPath).catch(() => {
+                    return;
+                });
             }).catch(() => {
-                send.text(message, error).catch(() => { return })
+                send.text(message, error).catch(() => {
+                    return;
+                });
             });
-        } else if (response.type == "image") {
-            let url = response.download;
-            MessageMedia.fromUrl(url, { unsafeMime: true }).then((media: MessageMedia) => {
-                if (!media.filename) {
-                    media.filename = uuidv4() + ".jpeg";
-                }
-                let mediaPath = "./media/images/" + media.filename;
-                fs.writeFileSync(mediaPath, media.data, "base64");
-                send.media(message, mediaPath).catch(() => { return });
-            })
+        } else if (response.type === "image") {
+            const mediaUrl = response.download;
+            send.mediaUrl(message, mediaUrl).catch(() => {
+                return;
+            });
         } else {
             send.text(message, noMedia);
         }
     } else {
         send.text(message, noMedia);
     }
-}
+};
 
 
 type variants = {
@@ -87,18 +90,18 @@ type variants = {
 
 const getUrl = (url: string) => {
     return new URL(url).href;
-}
+};
 
 const isValidURL = (s: string) => {
     try {
-        let url = new URL(s);
-        if (url.hostname == "twitter.com") {
-            let path = url.pathname.split("/");
-            if (path.length == 4 && path[2] == "status") {
+        const url = new URL(s);
+        if (url.hostname === "twitter.com") {
+            const path = url.pathname.split("/");
+            if (path.length === 4 && path[2] === "status") {
                 return true;
             }
         }
-        return false
+        return false;
     } catch (err) {
         return false;
     }
@@ -107,4 +110,4 @@ const isValidURL = (s: string) => {
 module.exports = {
     name: "tmd",
     process
-}
+};

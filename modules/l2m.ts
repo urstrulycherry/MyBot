@@ -1,17 +1,16 @@
-import WAWebJS, { MessageMedia } from "whatsapp-web.js";
+import WAWebJS from "whatsapp-web.js";
 import { send } from "../util/reply";
 
 const invalidUrl = "Invalid url";
-const noMedia = "No media found";
 
-const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
+const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("link 2 media");
     let url = message.body.split(" ")[1];
     if (!url) {
         if (message.hasQuotedMsg) {
-            let chat = await message.getChat();
+            const chat = await message.getChat();
             await chat.fetchMessages({ limit: 500 });
-            let quotedMsg = await message.getQuotedMessage();
+            const quotedMsg = await message.getQuotedMessage();
             url = quotedMsg.body;
         }
     }
@@ -24,15 +23,17 @@ const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
         return;
     }
     trigger(url, message);
-}
+};
 
 const trigger = (url: string, message: WAWebJS.Message) => {
-    send.mediaUrl(message, url)
-}
+    send.mediaUrl(message, url);
+};
 const isValidURL = (s: string) => {
     try {
-        let url = new URL(s);
-        return true;
+        const url = new URL(s);
+        if (url !== null) {
+            return true;
+        } return false;
     } catch (err) {
         return false;
     }
@@ -41,4 +42,4 @@ const isValidURL = (s: string) => {
 module.exports = {
     name: "l2m",
     process
-}
+};

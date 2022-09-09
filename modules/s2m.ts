@@ -1,41 +1,41 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
-import fs from 'fs';
-import { join } from "path";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 import { send } from "../util/reply";
-const ffmpeg = require('fluent-ffmpeg');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const ffmpeg = require("fluent-ffmpeg");
 ffmpeg.setFfmpegPath(ffmpegPath);
-const isAnimated = require('is-animated')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const isAnimated = require("is-animated");
 
 
-let noSticker = "Reply to a sticker to convert it to a image/video";
-let process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
+const noSticker = "Reply to a sticker to convert it to a image/video";
+const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("sticker2media");
     if (!message.hasQuotedMsg) {
         send.text(message, noSticker);
-        return
+        return;
     }
-    let chat = await message.getChat();
+    const chat = await message.getChat();
     await chat.fetchMessages({ limit: 500 });
-    let quotedMsg = await message.getQuotedMessage();
+    const quotedMsg = await message.getQuotedMessage();
 
     if (!quotedMsg.hasMedia) {
         send.text(message, noSticker);
-        return
+        return;
     }
 
     quotedMsg.downloadMedia().then((media: MessageMedia) => {
-        let buff = Buffer.from(media.data, "base64")
-        if (isAnimated(buff)) {
-        } else {
+        const buff = Buffer.from(media.data, "base64");
+        if (!isAnimated(buff)) {
             send.mediaMessage(message, media);
         }
     }).catch(() => {
-        send.text(message, "catch-" + noSticker);
-    })
-}
+        send.text(message, `catch-${noSticker}`);
+    });
+};
 
 module.exports = {
     name: "s2m",
     process
-}
+};
