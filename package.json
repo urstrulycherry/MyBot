@@ -17,6 +17,7 @@
     "ffmpeg": "^0.0.4",
     "instagram-url-direct": "^1.0.12",
     "is-animated": "^2.0.2",
+    "jimp": "^0.16.2",
     "pm2": "^5.2.0",
     "qrcode-terminal": "^0.12.0",
     "twitter-url-direct": "^1.0.4",
