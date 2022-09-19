@@ -24,9 +24,9 @@
   "license": "ISC",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@types/fluent-ffmpeg": "^2.1.20",
     "axios": "^0.27.2",
     "ffmpeg": "^0.0.4",
-    "fluent-ffmpeg": "^2.1.2",
     "instagram-url-direct": "^1.0.12",
     "is-animated": "^2.0.2",
     "jimp": "^0.16.2",

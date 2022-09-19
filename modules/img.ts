@@ -18,7 +18,6 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     });
 };
 
-
 const trigger = async (prompt: string, art: string, message: WAWebJS.Message) => {
     const browser = await puppeteer.launch({
         args: ["--no-sandbox"]
@@ -29,11 +28,10 @@ const trigger = async (prompt: string, art: string, message: WAWebJS.Message) =>
     page.click(`img[alt='${art}']`);
     await page.waitForSelector(".iMLenh");
     page.click(".iMLenh");
-    await page.waitForSelector("#blur-overlay > div > div > div > div.PaneContainers__PaneDisplayContainer-sc-9ic5sr-1.jTkaiO > div > img");
+    // await page.waitForSelector("#blur-overlay > div > div > div > div.PaneContainers__PaneDisplayContainer-sc-9ic5sr-1.jTkaiO > div > img");
     await page.waitForXPath("/html/body/div[1]/div/div[3]/div/div/div/div[3]/div[2]/div[1]/button");
-    const [res] = await page.$x("/html/body/div[1]/div/div[3]/div/div/div/div[1]/div/img");
-    const src = await (await res.getProperty("src"))._remoteObject.value;
-    await browser.close();
+    const src = await page.$eval("#blur-overlay > div > div > div > div.PaneContainers__PaneDisplayContainer-sc-9ic5sr-1.jTkaiO > div > img", (e) => e.getAttribute("src"));
+    browser.close();
     if (!src) return;
     const image = await Jimp.read(src);
     await image.crop(76, 226, 930, 1551).writeAsync(`${message.id._serialized}.jpg`);

@@ -3,7 +3,7 @@ import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 import { send } from "../util/reply";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const ffmpeg = require("fluent-ffmpeg");
+import ffmpeg from "fluent-ffmpeg";
 ffmpeg.setFfmpegPath(ffmpegPath);
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const isAnimated = require("is-animated");
