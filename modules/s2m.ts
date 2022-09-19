@@ -8,7 +8,6 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const isAnimated = require("is-animated");
 
-
 const noSticker = "Reply to a sticker to convert it to a image/video";
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("sticker2media");
