@@ -1,5 +1,4 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
-import { v4 as uuidv4 } from "uuid";
 import { send } from "../util/reply";
 import fs from "fs";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -55,7 +54,7 @@ const trigger = async (url: string, message: WAWebJS.Message) => {
             const mediaUrl = download[maxWidthIndex].url;
             MessageMedia.fromUrl(mediaUrl, { unsafeMime: true }).then((media: MessageMedia) => {
                 if (!media.filename) {
-                    media.filename = `${uuidv4()}.mp4`;
+                    media.filename = `${message.id._serialized}.mp4`;
                 }
                 const mediaPath = `./media/videos/${media.filename}`;
                 fs.writeFileSync(mediaPath, media.data, "base64");
@@ -79,7 +78,6 @@ const trigger = async (url: string, message: WAWebJS.Message) => {
         send.text(message, noMedia);
     }
 };
-
 
 type variants = {
     width: string,
