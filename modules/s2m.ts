@@ -1,10 +1,5 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 import { send } from "../util/reply";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-import ffmpeg from "fluent-ffmpeg";
-ffmpeg.setFfmpegPath(ffmpegPath);
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const isAnimated = require("is-animated");
 
@@ -26,11 +21,10 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
 
     quotedMsg.downloadMedia().then((media: MessageMedia) => {
         const buff = Buffer.from(media.data, "base64");
+        if (!(media.mimetype === "image/jpeg" || media.mimetype === "video/mp4")) return;
         if (!isAnimated(buff)) {
             send.mediaMessage(message, media);
         }
-    }).catch(() => {
-        send.text(message, `catch-${noSticker}`);
     });
 };
 

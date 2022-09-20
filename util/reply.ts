@@ -8,11 +8,8 @@ export class send {
         });
     };
 
-    static sticker = async (message: Message, stickerPath: string, mediaPath: string | undefined) => {
+    static sticker = async (message: Message, stickerPath: string) => {
         message.reply(MessageMedia.fromFilePath(stickerPath), undefined, { sendMediaAsSticker: true }).then(() => {
-            if (mediaPath) {
-                clearMedia(mediaPath);
-            }
             if (stickerPath) {
                 clearMedia(stickerPath);
             }
