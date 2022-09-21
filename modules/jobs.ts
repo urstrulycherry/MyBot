@@ -1,4 +1,3 @@
-/* eslint-disable */
 import WAWebJS from "whatsapp-web.js";
 import { send } from "../util/reply";
 import puppeteer from "puppeteer";
@@ -33,24 +32,25 @@ const trigger = async (keyword: string, location: string) => {
                     company: li.querySelector(".base-search-card__subtitle")?.textContent?.trim().replace(/\n/g, ""),
                     location: li.querySelector(".job-search-card__location")?.textContent?.trim().replace(/\n/g, ""),
                     date: li.querySelector("time")?.innerText?.trim().replace(/\n/g, ""),
-                    link: li.querySelector(".base-card__full-link")?.getAttribute("href"),
-                }
-            } catch (e: any) {
+                    link: li.querySelector(".base-card__full-link")?.getAttribute("href")
+                };
+            } catch (e: unknown) {
                 console.log(e);
-            };
+            }
         });
     });
     browser.close();
     jobs = jobs.slice(0, 10);
-    const text = jobs.map((job, index) => {
+    const text = jobs.map((job) => {
         return `✉️ *${job?.title}*
 *🏬 ${job?.company}*
 _📍 ${job?.location}_
 _📅 ${job?.date}_
 🔗 ${job?.link}
-`}).join("\n\n");
+`;
+    }).join("\n\n");
     return text;
-}
+};
 
 module.exports = {
     name: "jobs",
