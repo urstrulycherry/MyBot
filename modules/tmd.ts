@@ -1,13 +1,10 @@
-import WAWebJS, { MessageMedia } from "whatsapp-web.js";
+import WAWebJS from "whatsapp-web.js";
 import { send } from "../util/reply";
-import fs from "fs";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const twitterGetUrl = require("twitter-url-direct");
 
 const invalidUrl = "Invalid url";
 const noMedia = "No media found";
-const error = "Something went wrong";
-
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("tmd");
     let url = message.body.split(" ")[1];
@@ -52,25 +49,10 @@ const trigger = async (url: string, message: WAWebJS.Message) => {
                 return;
             }
             const mediaUrl = download[maxWidthIndex].url;
-            MessageMedia.fromUrl(mediaUrl, { unsafeMime: true }).then((media: MessageMedia) => {
-                if (!media.filename) {
-                    media.filename = `${message.id._serialized}.mp4`;
-                }
-                const mediaPath = `./media/videos/${media.filename}`;
-                fs.writeFileSync(mediaPath, media.data, "base64");
-                send.media(message, mediaPath).catch(() => {
-                    return;
-                });
-            }).catch(() => {
-                send.text(message, error).catch(() => {
-                    return;
-                });
-            });
+            send.url(message, mediaUrl);
         } else if (response.type === "image") {
             const mediaUrl = response.download;
-            send.mediaUrl(message, mediaUrl).catch(() => {
-                return;
-            });
+            send.url(message, mediaUrl);
         } else {
             send.text(message, noMedia);
         }

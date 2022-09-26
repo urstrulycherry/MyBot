@@ -34,7 +34,7 @@ const trigger = async (links: string[], message: WAWebJS.Message) => {
         const response = await instagramGetUrl(url);
         if (response.results_number > 0) {
             response.url_list.forEach((mediaUrl: string) => {
-                send.mediaUrl(message, mediaUrl);
+                send.url(message, mediaUrl);
             });
         } else {
             send.text(message, noMedia);

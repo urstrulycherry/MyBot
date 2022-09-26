@@ -21,9 +21,10 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
 
     quotedMsg.downloadMedia().then((media: MessageMedia) => {
         const buff = Buffer.from(media.data, "base64");
-        if (!(media.mimetype === "image/jpeg" || media.mimetype === "video/mp4")) return;
+        console.log(media.mimetype);
+        if (!(media.mimetype === "image/webp")) return;
         if (!isAnimated(buff)) {
-            send.mediaMessage(message, media);
+            send.media(message, media);
         }
     });
 };

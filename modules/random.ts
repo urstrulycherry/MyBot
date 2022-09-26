@@ -10,8 +10,6 @@ const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
     const random = Math.floor(Math.random() * participants.length);
     const randomParticipant = participants[random];
     const randomParticipantContact = await client.getContactById(randomParticipant.id._serialized);
-
-    console.log(JSON.stringify(randomParticipant));
     message.reply(`Random person @${randomParticipant.id.user}`, undefined, { mentions: [randomParticipantContact] });
 };
 

@@ -2,38 +2,41 @@ import { Message, MessageMedia } from "whatsapp-web.js";
 import fs from "fs";
 
 export class send {
+    static fileLimit = 15.5;
     static text = async (message: Message, text: string) => {
-        message.reply(text).catch((e) => {
-            send.error(message, e);
-        });
-    };
-
-    static sticker = async (message: Message, stickerPath: string) => {
-        message.reply(MessageMedia.fromFilePath(stickerPath), undefined, { sendMediaAsSticker: true }).then(() => {
-            if (stickerPath) {
-                clearMedia(stickerPath);
-            }
-        }).catch((e) => {
-            send.error(message, e);
-        });
-    };
-
-    static media = async (message: Message, mediaPath: string) => {
-        message.reply(MessageMedia.fromFilePath(mediaPath)).then(() => {
-            clearMedia(mediaPath);
-        }).catch((e) => {
-            send.error(message, e);
-        });
-    };
-
-    static mediaUrl = async (message: Message, mediaUrl: string) => {
-        MessageMedia.fromUrl(mediaUrl, { unsafeMime: true }).then((media: MessageMedia) => {
-            message.reply(media).catch((e) => {
+        message.reply(text)
+            .catch((e) => {
                 send.error(message, e);
             });
-        }).catch((e) => {
-            send.error(message, e);
-        });
+    };
+
+    static sticker = async (message: Message, stickerMedia: MessageMedia) => {
+        const filename = `./media/stickers/${message.id._serialized}.webp`;
+        const buff = Buffer.from(stickerMedia.data, "base64");
+        fs.writeFileSync(filename, buff);
+        message.reply(MessageMedia.fromFilePath(filename), undefined, { sendMediaAsSticker: true })
+            .catch((e) => {
+                send.error(message, e);
+            })
+            .finally(() => {
+                clearMedia(filename);
+            });
+    };
+
+    static path = async (message: Message, mediaPath: string) => {
+        send.media(message, MessageMedia.fromFilePath(mediaPath))
+            .finally(() => {
+                clearMedia(mediaPath);
+            });
+    };
+
+    static url = async (message: Message, mediaUrl: string) => {
+        MessageMedia.fromUrl(mediaUrl, { unsafeMime: true })
+            .then((media: MessageMedia) => {
+                send.media(message, media);
+            }).catch((e) => {
+                send.error(message, e);
+            });
     };
 
     static error = async (message: Message, error: Error) => {
@@ -43,13 +46,24 @@ export class send {
             });
     };
 
-    static mediaMessage = async (message: Message, media: MessageMedia) => {
-        message.reply(media).catch((e) => {
+    static media = async (message: Message, media: MessageMedia) => {
+        const mediaSize = media.data.length * 3 / 4 / 1024 / 1024;
+        if (mediaSize > send.fileLimit) {
+            send.document(message, media);
+        } else {
+            message.reply(media)
+                .catch((e) => {
+                    send.error(message, e);
+                });
+        }
+    };
+
+    static document = async (message: Message, media: MessageMedia) => {
+        message.reply(media, undefined, { sendMediaAsDocument: true }).catch((e) => {
             send.error(message, e);
         });
     };
 }
-
 
 const clearMedia = (filePath: string) => {
     if (fs.existsSync(filePath)) {

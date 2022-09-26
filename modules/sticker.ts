@@ -1,7 +1,6 @@
 import WAWebJS, { Message } from "whatsapp-web.js";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
-import fs from "fs";
 import { send } from "../util/reply";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Util = require("whatsapp-web.js/src/util/Util");
@@ -41,10 +40,7 @@ const trigger = async (message: WAWebJS.Message, mediaMessage: WAWebJS.Message, 
             return;
         }
         Util.formatToWebpSticker(media, metaData, client.pupPage).then((stickerMedia: WAWebJS.MessageMedia) => {
-            const filename = `./media/stickers/${message.id._serialized}.webp`;
-            const buff = Buffer.from(stickerMedia.data, "base64");
-            fs.writeFileSync(filename, buff);
-            send.sticker(message, filename);
+            send.sticker(message, stickerMedia);
         });
     });
 };

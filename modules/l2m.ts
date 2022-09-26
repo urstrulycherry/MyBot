@@ -26,7 +26,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
 };
 
 const trigger = (url: string, message: WAWebJS.Message) => {
-    send.mediaUrl(message, url);
+    send.url(message, url);
 };
 const isValidURL = (s: string) => {
     try {

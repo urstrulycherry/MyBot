@@ -12,7 +12,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
 
     if (quotedMsg.hasMedia) {
         const media = await quotedMsg.downloadMedia();
-        send.mediaMessage(message, media);
+        send.media(message, media);
     } else {
         send.text(message, quotedMsg.body);
     }
