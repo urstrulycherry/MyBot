@@ -42,6 +42,9 @@ const trigger = async (message: WAWebJS.Message, mediaMessage: WAWebJS.Message, 
         Util.formatToWebpSticker(media, metaData, client.pupPage).then((stickerMedia: WAWebJS.MessageMedia) => {
             send.sticker(message, stickerMedia);
         });
+    }).catch(() => {
+        send.text(message, noMediaMessage);
+        return;
     });
 };
 

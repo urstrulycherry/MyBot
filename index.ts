@@ -62,7 +62,7 @@ client.on("qr", (qr: string) => {
 client.on("message_create", async (message: WAWebJS.Message) => {
     if (message.isStatus) return;
     if (message.body === "" || !message.body) return;
-    let firstWord = message.body.split(" ")[0];
+    let firstWord = message.body.split(/\s+/g)[0];
     if (!firstWord[0].match(/^[.!#$]/)) return;
     firstWord = firstWord.slice(1);
     if (!commands.has(firstWord)) {

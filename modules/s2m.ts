@@ -4,6 +4,7 @@ import { send } from "../util/reply";
 const isAnimated = require("is-animated");
 
 const noSticker = "Reply to a sticker to convert it to a image/video";
+const noMedia = "No media found";
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("sticker2media");
     if (!message.hasQuotedMsg) {
@@ -26,6 +27,9 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
         if (!isAnimated(buff)) {
             send.media(message, media);
         }
+    }).catch(() => {
+        send.text(message, noMedia);
+        return;
     });
 };
 
