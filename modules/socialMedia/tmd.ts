@@ -2,6 +2,7 @@ import WAWebJS from "whatsapp-web.js";
 import { send } from "../../util/reply";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const twitterGetUrl = require("twitter-url-direct");
+
 const noMedia = "No media found";
 
 export const tmd = async (message: WAWebJS.Message, url: string) => {
