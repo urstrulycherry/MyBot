@@ -9,7 +9,7 @@ export class send {
         if (text.startsWith(formatter) && text.endsWith(formatter)) {
             text = text.substring(formatter.length, text.length - formatter.length);
         }
-        message.reply(`${formatter}${text}${formatter}`)
+        return message.reply(`${formatter}${text}${formatter}`)
             .catch((e) => {
                 send.error(message, e);
             });
@@ -19,7 +19,7 @@ export class send {
         const filename = `./media/stickers/${message.id._serialized}.webp`;
         const buff = Buffer.from(stickerMedia.data, "base64");
         fs.writeFileSync(filename, buff);
-        message.reply(MessageMedia.fromFilePath(filename), undefined, { sendMediaAsSticker: true })
+        return message.reply(MessageMedia.fromFilePath(filename), undefined, { sendMediaAsSticker: true })
             .catch((e) => {
                 send.error(message, e);
             })
@@ -45,7 +45,7 @@ export class send {
     };
 
     static error = async (message: Message, error: Error) => {
-        message.reply(`*From:* ${message.from}\n*To:* ${message.to}\n\n*Error:* ${error}`, "120363027235324221@g.us")
+        return message.reply(`*From:* ${message.from}\n*To:* ${message.to}\n\n*Error:* ${error}`, "120363027235324221@g.us")
             .catch(() => {
                 console.log("error");
             });
@@ -56,7 +56,7 @@ export class send {
         if (mediaSize > send.fileLimit) {
             send.document(message, media);
         } else {
-            message.reply(media)
+            return message.reply(media)
                 .catch((e) => {
                     send.error(message, e);
                 });
@@ -64,7 +64,7 @@ export class send {
     };
 
     static document = async (message: Message, media: MessageMedia) => {
-        message.reply(media, undefined, { sendMediaAsDocument: true }).catch((e) => {
+        return message.reply(media, undefined, { sendMediaAsDocument: true }).catch((e) => {
             send.error(message, e);
         });
     };
