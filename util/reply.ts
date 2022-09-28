@@ -4,7 +4,6 @@ import fs from "fs";
 export class send {
     static fileLimit = 15.5;
     static text = async (message: Message, text: string) => {
-        console.log(text);
         const formatter = "```";
         if (text.startsWith(formatter) && text.endsWith(formatter)) {
             text = text.substring(formatter.length, text.length - formatter.length);
