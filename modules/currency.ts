@@ -12,13 +12,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
         send.text(message, "Please provide currency code(s)");
         return;
     }
-    let res;
-    if (!cur2) {
-        res = await trigger(cur1, undefined);
-    } else {
-        res = await trigger(cur1, cur2);
-    }
-
+    const res = (!cur2) ? await trigger(cur1, undefined) : await trigger(cur1, cur2);
     if (!res) {
         send.text(message, incorrect);
         return;
@@ -27,12 +21,8 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
 };
 
 const trigger = async (cur1: string, cur2: string | undefined) => {
-    let url;
-    if (cur2) {
-        url = `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${cur1}/${cur2}.json`.toLowerCase();
-    } else {
-        url = `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/inr/${cur1}.json`.toLowerCase();
-    }
+    const url = cur2 ? `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${cur1}/${cur2}.json`.toLowerCase()
+        : `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/inr/${cur1}.json`.toLowerCase();
     const res = await axios.get(url).catch(() => {
         return null;
     });
@@ -42,12 +32,8 @@ const trigger = async (cur1: string, cur2: string | undefined) => {
     if (res.status !== 200) {
         return null;
     }
-    let msg;
-    if (cur2) {
-        msg = `Date: ${res.data.date}\n1 ${cur1.toUpperCase()} = ${res.data[cur2.toLowerCase()]} ${cur2.toUpperCase()}`;
-    } else {
-        msg = `Date: ${res.data.date}\n1 INR = ${res.data[cur1.toLowerCase()]} ${cur1.toUpperCase()}`;
-    }
+    const msg = cur2 ? `Date: ${res.data.date}\n1 ${cur1.toUpperCase()} = ${res.data[cur2.toLowerCase()]} ${cur2.toUpperCase()}`
+        : `Date: ${res.data.date}\n1 INR = ${res.data[cur1.toLowerCase()]} ${cur1.toUpperCase()}`;
     return msg;
 };
 
