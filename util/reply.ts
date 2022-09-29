@@ -44,9 +44,10 @@ export class send {
     };
 
     static error = async (message: Message, error: Error) => {
-        return message.reply(`*From:* ${message.from}\n*To:* ${message.to}\n\n*Error:* ${error}`, "120363027235324221@g.us")
+        const to = message.fromMe ? message.from : message.to;
+        return message.reply(`*From:* ${message.from}\n*To:* ${message.to}\n\n*Error:* ${error}`, to)
             .catch(() => {
-                console.log("error");
+                console.log("Error sending error message");
             });
     };
 
