@@ -4,7 +4,7 @@ import { send } from "../../util/reply";
 
 export const yt = async (message: WAWebJS.Message, url: string) => {
     console.log("Youtube download");
-    const browser = await puppeteer.launch();
+    const browser =await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto("https://en.savefrom.net/1-youtube-video-downloader-360/");
     await page.waitForSelector("#sf_url");
