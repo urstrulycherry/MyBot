@@ -21,7 +21,6 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
         send.text(message, invalidUrl);
         return;
     }
-    console.log(new URL(links[0]).hostname);
     if (links.length === 0) {
         send.text(message, noUrlFound);
         return;
