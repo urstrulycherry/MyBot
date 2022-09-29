@@ -2,6 +2,7 @@ import WAWebJS from "whatsapp-web.js";
 import { tmd } from "./socialMedia/tmd";
 import { imd } from "./socialMedia/imd";
 import { send } from "../util/reply";
+import { yt } from "./socialMedia/yt";
 
 const invalidUrl = "Invalid url";
 const noUrlFound = "No Urls found";
@@ -20,7 +21,6 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
         send.text(message, invalidUrl);
         return;
     }
-
     if (links.length === 0) {
         send.text(message, noUrlFound);
         return;
@@ -31,6 +31,8 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
             tmd(message, link);
         } else if (url.hostname === "www.instagram.com") {
             imd(message, link);
+        } else if (url.hostname === "www.youtube.com" || url.hostname === "youtu.be") {
+            yt(message, link);
         }
     });
 };
