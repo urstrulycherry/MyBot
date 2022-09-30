@@ -5,17 +5,22 @@ import Jimp from "jimp";
 
 const arts = ["Paint", "HDR", "Polygon", "Gouache", "Realistic", "Comic", "Line-Art", "Malevolent", "Meme", "Vibrant", "HD", "Blacklight", "Dark Fantasy"];
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
-    console.log("Image");
-    let body = message.body;
-    body = body.replace(/^[^\s]+\s/, "");
-    // eslint-disable-next-line prefer-const
-    let [prompt, art] = body.split(" -");
-    if (!art) art = "Realistic";
-    if (!arts.includes(art)) art = "Realistic";
-    if (!prompt || !art) return;
-    trigger(prompt, art, message).catch(() => {
-        send.text(message, "Something went wrong");
-    });
+    const error = "Something went wrong, please try again later";
+    try {
+        console.log("Image");
+        let body = message.body;
+        body = body.replace(/^[^\s]+\s/, "");
+        // eslint-disable-next-line prefer-const
+        let [prompt, art] = body.split(" -");
+        if (!art) art = "Realistic";
+        if (!arts.includes(art)) art = "Realistic";
+        if (!prompt || !art) return;
+        trigger(prompt, art, message).catch(() => {
+            send.text(message, "Something went wrong");
+        });
+    } catch (_) {
+        send.text(message, error);
+    }
 };
 
 const trigger = async (prompt: string, art: string, message: WAWebJS.Message) => {
