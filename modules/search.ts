@@ -4,10 +4,14 @@ import { send } from "../util/reply";
 
 const process = async (message: WAWebJS.Message) => {
     console.log("Image Search");
-    const search = message.body.slice(8).split(" ").join("+");
-    console.log(search);
-    if (!(search.split("+").length > 0)) return;
-    trigger(message, search);
+    const error = "Sorry, I couldn't find any images for that search.";
+    try {
+        const search = message.body.slice(8).split(" ").join("+");
+        if (!(search.split("+").length > 0)) return;
+        trigger(message, search);
+    } catch (_) {
+        send.text(message, error);
+    }
 };
 
 const trigger = async (message: WAWebJS.Message, search: string) => {
