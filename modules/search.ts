@@ -16,7 +16,9 @@ const process = async (message: WAWebJS.Message) => {
 
 const trigger = async (message: WAWebJS.Message, search: string) => {
     try {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            headless: false
+        });
         const page = await browser.newPage();
         await page.goto(`https://www.google.co.in/search?q=${search}&tbm=isch`);
         const selector = "#islrg > div.islrc > div:nth-child(2) > a.wXeWr.islib.nfEiy";
