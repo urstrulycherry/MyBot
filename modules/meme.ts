@@ -4,9 +4,14 @@ import { send } from "../util/reply";
 
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("Memes");
-    const meme = await axios("https://meme-api.herokuapp.com/gimme")
-        .then(res => res.data);
-    send.url(message, meme.url);
+    const error = "Something went wrong, please try again later";
+    try {
+        const meme = await axios("https://meme-api.herokuapp.com/gimme")
+            .then(res => res.data);
+        send.url(message, meme.url);
+    } catch (_) {
+        send.text(message, error);
+    }
 };
 
 module.exports = {

@@ -5,19 +5,24 @@ import { send } from "../util/reply";
 const incorrect = "Incorrect currency code";
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("economy");
-    const msg = message.body.split(" ").slice(1).join(" ");
-    const arr = msg.split(" ").filter((item) => item.trim());
-    const [cur1, cur2] = arr;
-    if (!cur1) {
-        send.text(message, "Please provide currency code(s)");
-        return;
+    const error = "Something went wrong, please try again later";
+    try {
+        const msg = message.body.split(" ").slice(1).join(" ");
+        const arr = msg.split(" ").filter((item) => item.trim());
+        const [cur1, cur2] = arr;
+        if (!cur1) {
+            send.text(message, "Please provide currency code(s)");
+            return;
+        }
+        const res = (!cur2) ? await trigger(cur1, undefined) : await trigger(cur1, cur2);
+        if (!res) {
+            send.text(message, incorrect);
+            return;
+        }
+        send.text(message, res);
+    } catch (_) {
+        send.text(message, error);
     }
-    const res = (!cur2) ? await trigger(cur1, undefined) : await trigger(cur1, cur2);
-    if (!res) {
-        send.text(message, incorrect);
-        return;
-    }
-    send.text(message, res);
 };
 
 const trigger = async (cur1: string, cur2: string | undefined) => {
