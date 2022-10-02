@@ -31,7 +31,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
             tmd(message, link);
         } else if (url.hostname === "www.instagram.com") {
             imd(message, link);
-        } else if (url.hostname === "www.youtube.com" || url.hostname === "youtu.be") {
+        } else if (url.hostname === "www.youtube.com" || url.hostname === "youtu.be" || url.hostname === "youtube.com" || url.hostname === "m.youtube.com") {
             yt(message, link);
         }
     });
