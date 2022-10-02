@@ -21,9 +21,12 @@ export const yt = async (message: WAWebJS.Message, url: string) => {
         const duration = await page.$eval(selector, div => div.textContent);
         if (!duration) return;
         const seconds = duration.split(":").reverse().reduce((prev, curr, i) => prev + parseInt(curr, 10,) * 60 ** i, 0);
+        console.log(seconds, yourHref);
         if (seconds < 70) {
+            console.log("Sending video");
             return send.url(message, yourHref);
         }
+        console.log("Sending tinyurl");
         page.goto("https://tinyurl.com/app/");
         selector = "#long-url";
         await page.waitForSelector(selector);
@@ -33,8 +36,10 @@ export const yt = async (message: WAWebJS.Message, url: string) => {
         selector = "#tinyurl > div.root > section > div > div.flex-grow-1.overflow-y-a.border-bottom > div.border-top > div > div > div > div > div.flex-fill > div.alias > div";
         await page.waitForSelector(selector);
         let link = await page.$eval(selector, div => div.textContent);
+        console.log(link);
         link = `https://${link?.trim()}`;
         send.text(message, link);
+        await browser.close();
     } catch (_) {
         send.text(message, error);
     }
