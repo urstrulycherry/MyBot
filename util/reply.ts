@@ -1,5 +1,6 @@
 import { Message, MessageMedia } from "whatsapp-web.js";
 import fs from "fs";
+import pdfkit from "pdfkit";
 
 export class send {
     static fileLimit = 15.5;
@@ -66,6 +67,23 @@ export class send {
     static document = async (message: Message, media: MessageMedia) => {
         return message.reply(media, undefined, { sendMediaAsDocument: true }).catch((e) => {
             send.error(message, e);
+        });
+    };
+
+    static pdf = async (message: Message, files: string[]) => {
+        const doc = new pdfkit();
+        for (let i = 0; i < files.length; i++) {
+            doc.image(files[i], 0, 0, { fit: [630, 750], align: "center", valign: "center" });
+            if (i < files.length - 1) {
+                doc.addPage();
+            }
+            clearMedia(files[i]);
+        }
+        doc.end();
+        doc.pipe(fs.createWriteStream("media/temp/output.pdf")).on("finish", () => {
+            return this.path(message, "media/temp/output.pdf");
+        }).on("error", (e: Error) => {
+            this.error(message, e);
         });
     };
 }
