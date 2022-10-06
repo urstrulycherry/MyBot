@@ -9,10 +9,13 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
         const joke = await axios("https://v2.jokeapi.dev/joke/programming")
             .then(res => res.data);
         if (joke.delivery) {
-            const m = await message.reply(joke.setup);
+            const m = await send.text(message, joke.setup);
             setTimeout(() => {
-                m.reply(joke.delivery);
-            }, 2000);
+                if (!m) {
+                    return send.text(message, joke.delivery);
+                }
+                send.text(m, joke.delivery);
+            }, 2500);
         } else {
             send.text(message, joke.joke);
         }

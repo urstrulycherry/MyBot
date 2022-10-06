@@ -28,16 +28,16 @@ export class send {
     };
 
     static path = async (message: Message, mediaPath: string) => {
-        send.media(message, MessageMedia.fromFilePath(mediaPath))
+        return send.media(message, MessageMedia.fromFilePath(mediaPath))
             .finally(() => {
                 clearMedia(mediaPath);
             });
     };
 
     static url = async (message: Message, mediaUrl: string) => {
-        MessageMedia.fromUrl(mediaUrl, { unsafeMime: true })
+        return MessageMedia.fromUrl(mediaUrl, { unsafeMime: true })
             .then((media: MessageMedia) => {
-                send.media(message, media);
+                return send.media(message, media);
             }).catch((e) => {
                 send.error(message, e);
             });
