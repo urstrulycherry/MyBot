@@ -1,7 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
 import { tmd } from "./socialMedia/tmd";
 import { imd } from "./socialMedia/imd";
-import { send } from "../util/reply";
+import { helper, send } from "../util/reply";
 import { yt } from "./socialMedia/yt";
 
 const invalidUrl = "Invalid url";
@@ -11,12 +11,12 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("Media Download");
     let links: string[] = [];
     if (message.body.split(/\s+/g).length > 1) {
-        links = getLinksFromString(message.body);
+        links = helper.getLinksFromString(message.body);
     } else if (message.hasQuotedMsg) {
         const chat = await message.getChat();
         await chat.fetchMessages({ limit: 500 });
         const quotedMsg = await message.getQuotedMessage();
-        links = getLinksFromString(quotedMsg.body);
+        links = helper.getLinksFromString(quotedMsg.body);
     } else {
         send.text(message, invalidUrl);
         return;
@@ -33,29 +33,10 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
             imd(message, link);
         } else if (url.hostname === "www.youtube.com" || url.hostname === "youtu.be" || url.hostname === "youtube.com" || url.hostname === "m.youtube.com") {
             yt(message, link);
+        } else {
+            send.url(message, link);
         }
     });
-};
-
-const getLinksFromString = (str: string) => {
-    const links: string[] = [];
-    const words: string[] = str.split(/\s+/g);
-    for (let i = 0; i < words.length; i++) {
-        if (isValidHttpUrl(words[i])) {
-            links.push(words[i]);
-        }
-    }
-    return links;
-};
-
-const isValidHttpUrl = (u: string) => {
-    let url: URL;
-    try {
-        url = new URL(u);
-    } catch (_) {
-        return false;
-    }
-    return url.protocol === "http:" || url.protocol === "https:";
 };
 
 module.exports = {
