@@ -1,43 +1,38 @@
 import WAWebJS from "whatsapp-web.js";
-import { send } from "../../util/reply";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const twitterGetUrl = require("twitter-url-direct");
+const { parseUrl, getDetails } = require("twitter-url");
+import { send } from "../../util/reply";
 
 const noMedia = "No media found";
 
 export const tmd = async (message: WAWebJS.Message, url: string) => {
-    const response = await twitterGetUrl(url);
-    if (response.found === true) {
-        if (response.type === "video/gif") {
-            const download: variants[] = response.download;
+    const urls = [];
+    const { id } = parseUrl(url);
+    const details = getDetails(id);
+    for (let i = 0; i < details.globalObjects.tweets[id].extended_entities.media.length; i++) {
+        if (details.globalObjects.tweets[id].extended_entities.media[i].video_info) {
             let maxWidth = -1;
             let maxWidthIndex = -1;
-            for (let i = 0; i < download.length; i++) {
-                if (Number(download[i].width) >= maxWidth) {
-                    maxWidth = Number(download[i].width);
-                    maxWidthIndex = i;
+            for (let j = 0; j < details.globalObjects.tweets[id].extended_entities.media[i].video_info.variants.length; j++) {
+                if (details.globalObjects.tweets[id].extended_entities.media[i].video_info.variants[j].content_type === "video/mp4") {
+                    if (Number(details.globalObjects.tweets[id].extended_entities.media[i].video_info.variants[j].bitrate) >= maxWidth) {
+                        maxWidth = Number(details.globalObjects.tweets[id].extended_entities.media[i].video_info.variants[j].bitrate);
+                        maxWidthIndex = j;
+                    }
                 }
             }
-            if (maxWidthIndex === -1) {
-                send.text(message, noMedia);
-                return;
+            if (maxWidthIndex !== -1) {
+                urls.push(details.globalObjects.tweets[id].extended_entities.media[i].video_info.variants[maxWidthIndex].url);
             }
-            const mediaUrl = download[maxWidthIndex].url;
-            send.url(message, mediaUrl);
-        } else if (response.type === "image") {
-            const mediaUrl = response.download;
-            send.url(message, mediaUrl);
         } else {
-            send.text(message, noMedia);
+            urls.push(details.globalObjects.tweets[id].extended_entities.media[i].media_url_https);
         }
-    } else {
-        send.text(message, noMedia);
+    }
+    if (urls.length === 0) {
+        return send.text(message, noMedia);
+    }
+    for (let i = 0; i < urls.length; i++) {
+        if (!urls[i]) continue;
+        await send.url(message, urls[i]);
     }
 };
-
-type variants = {
-    width: string,
-    height: string,
-    dimension: string,
-    url: string
-}
