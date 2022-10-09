@@ -70,7 +70,7 @@ export class send {
         });
     };
 
-    static pdf = async (message: Message, files: string[]) => {
+    static pdf = async (message: Message, files: string[], fileName?: string) => {
         const doc = new pdfkit();
         for (let i = 0; i < files.length; i++) {
             doc.image(files[i], 0, 0, { fit: [630, 750], align: "center", valign: "center" });
@@ -80,8 +80,9 @@ export class send {
             clearMedia(files[i]);
         }
         doc.end();
-        doc.pipe(fs.createWriteStream("media/temp/output.pdf")).on("finish", () => {
-            return this.path(message, "media/temp/output.pdf");
+        const path = `./media/temp/${fileName || message.id._serialized}.pdf`;
+        doc.pipe(fs.createWriteStream(path)).on("finish", () => {
+            return this.path(message, path);
         }).on("error", (e: Error) => {
             this.error(message, e);
         });
