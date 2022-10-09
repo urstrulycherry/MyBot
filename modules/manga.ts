@@ -2,6 +2,7 @@ import WAWebJS from "whatsapp-web.js";
 import puppeteer from "puppeteer";
 import { send } from "../util/reply";
 import Jimp from "jimp";
+import fs from "fs";
 
 const process = async (message: WAWebJS.Message) => {
     const paths: string[] = [];
@@ -19,12 +20,16 @@ const process = async (message: WAWebJS.Message) => {
     if (images.length === 0) {
         return send.text(message, "Invalid chapter or manga name found!!");
     }
+    fs.mkdirSync(`./media/temp/${msg}`, { recursive: true });
+    const dir = `./media/temp/${msg}`;
     for (let i = 0; i < images.length; i++) {
-        paths.push(`media/temp/${msg}-page${i}.jpg`);
+        const filePath = `${dir}/${msg}-page${i}.jpg`;
+        paths.push(filePath);
         const image = await Jimp.read(images[i]);
-        await image.writeAsync(`media/temp/${msg}-page${i}.jpg`);
+        await image.writeAsync(filePath);
     }
-    send.pdf(message, paths);
+    await send.pdf(message, paths, msg);
+    fs.rmSync(dir, { recursive: true, force: true });
 };
 
 module.exports = {
