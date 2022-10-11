@@ -89,29 +89,6 @@ export class send {
     };
 }
 
-export class helper {
-    static isValidHttpUrl = (u: string) => {
-        let url: URL;
-        try {
-            url = new URL(u);
-        } catch (_) {
-            return false;
-        }
-        return url.protocol === "http:" || url.protocol === "https:";
-    };
-
-    static getLinksFromString = (str: string) => {
-        const links: string[] = [];
-        const words: string[] = str.split(/\s+/g);
-        for (let i = 0; i < words.length; i++) {
-            if (this.isValidHttpUrl(words[i])) {
-                links.push(words[i]);
-            }
-        }
-        return links;
-    };
-}
-
 const clearMedia = (filePath: string) => {
     if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
