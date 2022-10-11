@@ -2,16 +2,17 @@ import WAWebJS from "whatsapp-web.js";
 import { send } from "../util/reply";
 import puppeteer from "puppeteer";
 import Jimp from "jimp";
+import { helper } from "../util/helper";
 
 const arts = ["Paint", "HDR", "Polygon", "Gouache", "Realistic", "Comic", "Line-Art", "Malevolent", "Meme", "Vibrant", "HD", "Blacklight", "Dark Fantasy"];
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     const error = "Something went wrong, please try again later";
     try {
         console.log("Image");
-        let body = message.body;
-        body = body.replace(/^[^\s]+\s/, "");
+        const msg = await helper.getMsgFromBody(message);
+        if (!msg) return;
         // eslint-disable-next-line prefer-const
-        let [prompt, art] = body.split(" -");
+        let [prompt, art] = msg.split(" --");
         if (!art) art = "Realistic";
         if (!arts.includes(art)) art = "Realistic";
         if (!prompt || !art) return;

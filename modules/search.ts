@@ -1,14 +1,15 @@
 import puppeteer from "puppeteer";
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
+import { helper } from "../util/helper";
 import { send } from "../util/reply";
 
 const error = "Sorry, I couldn't find any images for that search.";
 const process = async (message: WAWebJS.Message) => {
     console.log("Image Search");
     try {
-        const search = message.body.split(/\s+/g).slice(1).join("+");
-        if (!search) return;
-        trigger(message, search);
+        const msg = await helper.getMsgFromBody(message);
+        if (!msg) return;
+        trigger(message, msg);
     } catch (_) {
         send.text(message, error);
     }

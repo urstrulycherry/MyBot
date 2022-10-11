@@ -3,17 +3,19 @@ import puppeteer from "puppeteer";
 import { send } from "../util/reply";
 import Jimp from "jimp";
 import fs from "fs";
+import { helper } from "../util/helper";
 
 const process = async (message: WAWebJS.Message) => {
     const paths: string[] = [];
     console.log("manga search!");
     const browser = await puppeteer.launch();
-    const msg = message.body.split(/\s+/g).slice(1).join("-");
+    const msg = await helper.getMsgFromBody(message);
+    if (!msg) return;
     if (msg.length < 1) {
         return send.text(message, "Please enter manga name and chapter!");
     }
     const page = await browser.newPage();
-    await page.goto(`https://gogomanga.fun/${msg}`);
+    await page.goto(`https://gogomanga.fun/${msg.split(helper.spliter).join("-")}`);
     let images = await page.$$eval("img", (imgs) => imgs.map((img) => img.src));
     browser.close();
     images = images.slice(1, images.length - 8);

@@ -1,5 +1,6 @@
 import axios from "axios";
 import WAWebJS from "whatsapp-web.js";
+import { helper } from "../util/helper";
 import { send } from "../util/reply";
 
 const incorrect = "Incorrect currency code";
@@ -7,7 +8,8 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("economy");
     const error = "Something went wrong, please try again later";
     try {
-        const msg = message.body.split(" ").slice(1).join(" ");
+        const msg = await helper.getMsgFromBody(message);
+        if (!msg) return;
         const arr = msg.split(" ").filter((item) => item.trim());
         const [cur1, cur2] = arr;
         if (!cur1) {

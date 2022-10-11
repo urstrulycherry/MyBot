@@ -1,26 +1,17 @@
 import WAWebJS from "whatsapp-web.js";
 import { tmd } from "./socialMedia/tmd";
 import { imd } from "./socialMedia/imd";
-import { helper, send } from "../util/reply";
+import { send } from "../util/reply";
 import { yt } from "./socialMedia/yt";
-
-const invalidUrl = "Invalid url";
+import { helper } from "../util/helper";
 const noUrlFound = "No Urls found";
 
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("Media Download");
-    let links: string[] = [];
-    if (message.body.split(/\s+/g).length > 1) {
-        links = helper.getLinksFromString(message.body);
-    } else if (message.hasQuotedMsg) {
-        const chat = await message.getChat();
-        await chat.fetchMessages({ limit: 500 });
-        const quotedMsg = await message.getQuotedMessage();
-        links = helper.getLinksFromString(quotedMsg.body);
-    } else {
-        send.text(message, invalidUrl);
-        return;
-    }
+    // let links: string[] = [];
+    const msg = await helper.getMsgFromBody(message);
+    if (!msg) return;
+    const links = helper.getLinksFromString(msg);
     if (links.length === 0) {
         send.text(message, noUrlFound);
         return;

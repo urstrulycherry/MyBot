@@ -1,12 +1,14 @@
 import WAWebJS from "whatsapp-web.js";
 import { send } from "../util/reply";
 import puppeteer from "puppeteer";
+import { helper } from "../util/helper";
 
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     const error = "Something went wrong, please try again later";
     try {
         console.log("Processing jobs");
-        const msg = message.body.split(" ").slice(1).join(" ");
+        const msg = await helper.getMsgFromBody(message);
+        if (!msg) return;
         const arr = msg.split("--").filter((item) => item.trim());
         const [keyword, location] = arr;
 
@@ -47,10 +49,10 @@ const trigger = async (keyword: string, location: string) => {
     browser.close();
     jobs = jobs.slice(0, 10);
     const text = jobs.map((job) => {
-        return `✉️ *${job?.title}*
-*🏬 ${job?.company}*
-_📍 ${job?.location}_
-_📅 ${job?.date}_
+        return `✉️ ${job?.title}
+🏬 ${job?.company}
+📍 ${job?.location}
+📅 ${job?.date}
 🔗 ${job?.link}
 `;
     }).join("\n\n");
