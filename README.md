@@ -1,8 +1,8 @@
 # **MyBot - WhatsApp Bot**
 
-![](https://img.shields.io/github/stars/urstrulycherry/MyBot?style=flat-square)&emsp;
+![](https://img.shields.io/github/stars/urstrulycherry/MyBot?style=social)&emsp;
 ![](https://img.shields.io/github/forks/urstrulycherry/MyBot?style=flat-square)&emsp;
-![](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Furstrulycherry%2FMyBot)
+[![](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Furstrulycherry%2FMyBot)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2Furstrulycherry%2FMyBot)
 
 ## Description
 
