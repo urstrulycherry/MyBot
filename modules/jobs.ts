@@ -29,34 +29,40 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
 
 const trigger = async (keyword: string, location: string) => {
     const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(`https://in.linkedin.com/jobs/search?keywords=${keyword}&location=${location}`);
-    let jobs = await page.$$eval(".jobs-search__results-list li", (list) => {
-        return list.map((li) => {
-            try {
-                return {
-                    title: li.querySelector(".base-search-card__title")?.textContent?.trim().replace(/\n/g, ""),
-                    company: li.querySelector(".base-search-card__subtitle")?.textContent?.trim().replace(/\n/g, ""),
-                    location: li.querySelector(".job-search-card__location")?.textContent?.trim().replace(/\n/g, ""),
-                    date: li.querySelector("time")?.innerText?.trim().replace(/\n/g, ""),
-                    link: li.querySelector(".base-card__full-link")?.getAttribute("href")
-                };
-            } catch (e: unknown) {
-                console.log(e);
-            }
+    try {
+        const page = await browser.newPage();
+        await page.goto(`https://in.linkedin.com/jobs/search?keywords=${keyword}&location=${location}`);
+        let jobs = await page.$$eval(".jobs-search__results-list li", (list) => {
+            return list.map((li) => {
+                try {
+                    return {
+                        title: li.querySelector(".base-search-card__title")?.textContent?.trim().replace(/\n/g, ""),
+                        company: li.querySelector(".base-search-card__subtitle")?.textContent?.trim().replace(/\n/g, ""),
+                        location: li.querySelector(".job-search-card__location")?.textContent?.trim().replace(/\n/g, ""),
+                        date: li.querySelector("time")?.innerText?.trim().replace(/\n/g, ""),
+                        link: li.querySelector(".base-card__full-link")?.getAttribute("href")
+                    };
+                } catch (e: unknown) {
+                    console.log(e);
+                }
+            });
         });
-    });
-    browser.close();
-    jobs = jobs.slice(0, 10);
-    const text = jobs.map((job) => {
-        return `✉️ ${job?.title}
+        await browser.close();
+        jobs = jobs.slice(0, 10);
+        const text = jobs.map((job) => {
+            return `✉️ ${job?.title}
 🏬 ${job?.company}
 📍 ${job?.location}
 📅 ${job?.date}
 🔗 ${job?.link}
 `;
-    }).join("\n\n");
-    return text;
+        }).join("\n\n");
+        return text;
+    } catch (_) {
+        return "";
+    } finally {
+        await browser.close();
+    }
 };
 
 module.exports = {

@@ -12,15 +12,15 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
 };
 
 const trigger = async (msg: string, message: WAWebJS.Message) => {
+    const browser = await puppeteer.launch();
     try {
-        const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.goto(`https://www.google.com/search?q=${msg} weather`);
         await page.waitForSelector("#wob_wc", { timeout: 5000 });
         try {
             const selector = "#wob_wc > div.UQt4rd > div.Ab33Nc > div > div.vk_bk.wob-unit > a:nth-child(4) > span";
             const text = await page.$eval(selector, (el) => el.textContent);
-            if (text?.includes("°C")) {
+            if (text?.includes("C")) {
                 await page.click(selector);
             }
         } catch (_) {
@@ -34,6 +34,8 @@ const trigger = async (msg: string, message: WAWebJS.Message) => {
         send.path(message, filePath);
     } catch (_) {
         send.text(message, error);
+    } finally {
+        await browser.close();
     }
 };
 

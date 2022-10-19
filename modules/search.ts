@@ -16,8 +16,8 @@ const process = async (message: WAWebJS.Message) => {
 };
 
 const trigger = async (message: WAWebJS.Message, search: string) => {
+    const browser = await puppeteer.launch();
     try {
-        const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.goto(`https://www.google.com/search?q=${search}&tbm=isch&safe=active`);
         const selector = "#islrg > div.islrc > div:nth-child(2) > a.wXeWr.islib.nfEiy";
@@ -28,7 +28,7 @@ const trigger = async (message: WAWebJS.Message, search: string) => {
         await new Promise(r => setTimeout(r, 2500));
         const src = await page.$eval(imgSelector, (img) => img.getAttribute("src"));
         if (!src) return;
-        browser.close();
+        await browser.close();
         if (src.startsWith("data")) {
             const media = new MessageMedia("image/jpeg", src.split(",")[1], "image.jpeg");
             send.media(message, media);
@@ -39,6 +39,8 @@ const trigger = async (message: WAWebJS.Message, search: string) => {
         }
     } catch (_) {
         send.text(message, error);
+    } finally {
+        await browser.close();
     }
 };
 

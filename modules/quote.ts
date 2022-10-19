@@ -12,8 +12,8 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
 
 const trigger = async (message: WAWebJS.Message) => {
     const error = "Something went wrong, please try again later";
+    const browser = await puppeteer.launch();
     try {
-        const browser = await puppeteer.launch({});
         const page = await browser.newPage();
         await page.goto("https://en.wikiquote.org/wiki/Main_Page");
         await page.waitForXPath(quotePath);
@@ -28,6 +28,8 @@ const trigger = async (message: WAWebJS.Message) => {
         send.text(message, result);
     } catch (_) {
         send.text(message, error);
+    } finally {
+        await browser.close();
     }
 };
 
