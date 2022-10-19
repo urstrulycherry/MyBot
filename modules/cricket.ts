@@ -7,7 +7,7 @@ const process = async (message: WAWebJS.Message) => {
     console.log("live Cricket!!");
     const msg = await helper.getMsgFromBody(message);
     if (!msg) return;
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: false });
     try {
         const query = `live cricket score ${msg}`;
         const page = await browser.newPage();
