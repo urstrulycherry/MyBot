@@ -7,23 +7,23 @@ const process = async (message: WAWebJS.Message) => {
     console.log("live Cricket!!");
     const msg = await helper.getMsgFromBody(message);
     if (!msg) return;
+    const browser = await puppeteer.launch();
     try {
-        const browser = await puppeteer.launch();
         const query = `live cricket score ${msg}`;
         const page = await browser.newPage();
-        await page.goto(`https://www.google.com/search?&q=${query}`);
-        let selector = "#sports-app > div > div.imso-hov.imso-mh.PZPZlf > div:nth-child(2) > div > div > div > div.imso_mh__tm-scr.imso_mh__mh-bd.imso-hov";
-        await page.waitForSelector(selector, { timeout: 5000 });
-        await page.click(selector);
-        selector = "#liveresults-sports-immersive__match-fullpage > div > div:nth-child(2) > div.nGzje > div.imso-hide-loading.imso-mh.PZPZlf > div:nth-child(2) > div > div > div > div.imso_mh__tm-scr.imso_mh__mh-bd";
+        await page.goto(`https://www.google.com/search?&q=${query}#sie=m;/g/11sm_fm6_5;5;/m/026y268;sm;fp;1;;;`);
+        const selector = "#liveresults-sports-immersive__match-fullpage > div > div:nth-child(2) > div.nGzje";
         await page.waitForSelector(selector, { timeout: 5000 });
         const element = await page.$(selector);
         const filePath = `media/images/${message.id._serialized}.jpg`;
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         await element?.screenshot({ path: filePath });
         send.path(message, filePath);
-        browser.close();
-    } catch (e: unknown) {
+        await browser.close();
+    } catch (_) {
         send.text(message, "No Live Match Found!!");
+    } finally {
+        await browser.close();
     }
 };
 
