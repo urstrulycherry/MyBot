@@ -40,17 +40,17 @@ export class send {
             });
     };
 
-    static path = async (message: Message, mediaPath: string) => {
-        return send.media(message, MessageMedia.fromFilePath(mediaPath))
+    static path = async (message: Message, mediaPath: string, text = "") => {
+        return send.media(message, MessageMedia.fromFilePath(mediaPath), text)
             .finally(() => {
                 clearMedia(mediaPath);
             });
     };
 
-    static url = async (message: Message, mediaUrl: string) => {
+    static url = async (message: Message, mediaUrl: string, text = "") => {
         return MessageMedia.fromUrl(mediaUrl, { unsafeMime: true })
             .then((media: MessageMedia) => {
-                return send.media(message, media);
+                return send.media(message, media, text);
             }).catch((e) => {
                 send.error(message, e);
             });
@@ -65,12 +65,12 @@ export class send {
             });
     };
 
-    static media = async (message: Message, media: MessageMedia) => {
+    static media = async (message: Message, media: MessageMedia, text = "") => {
         const mediaSize = media.data.length * 3 / 4 / 1024 / 1024;
         if (mediaSize > send.fileLimit) {
             send.document(message, media);
         } else {
-            return message.reply(media)
+            return message.reply(media, undefined, { caption: text })
                 .then((replyMsg: Message) => {
                     react.success(message);
                     return replyMsg;
