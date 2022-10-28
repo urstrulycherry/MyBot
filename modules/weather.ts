@@ -3,7 +3,7 @@ import puppeteer from "puppeteer";
 import { helper } from "../util/helper";
 import { send } from "../util/reply";
 
-const error = "Something went wrong";
+const error = "No weather data found";
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("Weather");
     const msg = await helper.getMsgFromBody(message);
@@ -33,7 +33,7 @@ const trigger = async (msg: string, message: WAWebJS.Message) => {
         await browser.close();
         send.path(message, filePath);
     } catch (_) {
-        send.text(message, error);
+        send.catch(message, error);
     } finally {
         await browser.close();
     }

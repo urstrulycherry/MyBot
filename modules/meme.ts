@@ -10,7 +10,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
             .then(res => res.data);
         send.url(message, meme.url);
     } catch (_) {
-        send.text(message, error);
+        send.catch(message, error);
     }
 };
 

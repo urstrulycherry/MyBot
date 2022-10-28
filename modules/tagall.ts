@@ -1,4 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
+import { react } from "../util/reply";
 
 const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
     console.log("Tagall");
@@ -10,9 +11,14 @@ const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
     for (const participant of group.participants) {
         participants.push(await client.getContactById(participant.id._serialized));
     }
-    message.reply(body, undefined, { mentions: participants }).catch((err: Error) => {
-        console.log(err);
-    });
+    message.reply(body, undefined, { mentions: participants })
+        .then(() => {
+            react.success(message);
+        })
+        .catch((err: Error) => {
+            react.error(message);
+            console.log(err);
+        });
 };
 
 module.exports = {

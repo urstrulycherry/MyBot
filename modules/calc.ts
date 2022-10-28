@@ -12,7 +12,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
         const result = evaluate(exp);
         send.text(message, result.toString());
     } catch (_) {
-        send.text(message, invalidExp);
+        send.catch(message, invalidExp);
     }
 };
 

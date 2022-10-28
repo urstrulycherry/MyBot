@@ -13,7 +13,7 @@ const process = async (message: WAWebJS.Message) => {
         const msg = await helper.getMsgFromBody(message);
         if (!msg) return;
         if (msg.length < 1) {
-            return send.text(message, "Please enter manga name and chapter!");
+            return send.catch(message, "Please enter manga name and chapter!");
         }
         const page = await browser.newPage();
         await page.goto(`https://gogomanga.fun/${msg.split(helper.spliter).join("-")}`);
@@ -21,7 +21,7 @@ const process = async (message: WAWebJS.Message) => {
         await browser.close();
         images = images.slice(1, images.length - 8);
         if (images.length === 0) {
-            return send.text(message, "Invalid chapter or manga name found!!");
+            return send.catch(message, "Invalid chapter or manga name found!!");
         }
         fs.mkdirSync(`./media/temp/${msg}`, { recursive: true });
         const dir = `./media/temp/${msg}`;
@@ -34,7 +34,7 @@ const process = async (message: WAWebJS.Message) => {
         await send.pdf(message, paths, msg);
         fs.rmSync(dir, { recursive: true, force: true });
     } catch (_) {
-        send.text(message, "Something went wrong, please try again later");
+        send.catch(message, "Something went wrong, please try again later");
     } finally {
         await browser.close();
     }

@@ -17,10 +17,10 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
         if (!arts.includes(art)) art = "Realistic";
         if (!prompt || !art) return;
         trigger(prompt, art, message).catch(() => {
-            send.text(message, "Something went wrong");
+            send.catch(message, "Something went wrong");
         });
     } catch (_) {
-        send.text(message, error);
+        send.catch(message, error);
     }
 };
 
@@ -42,7 +42,7 @@ const trigger = async (prompt: string, art: string, message: WAWebJS.Message) =>
         await image.crop(76, 226, 930, 1551).writeAsync(filePath);
         send.path(message, filePath);
     } catch (_) {
-        send.text(message, error);
+        send.catch(message, error);
     } finally {
         await browser.close();
     }

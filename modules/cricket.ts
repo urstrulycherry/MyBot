@@ -23,7 +23,7 @@ const process = async (message: WAWebJS.Message) => {
         send.path(message, filePath);
         await browser.close();
     } catch (_) {
-        send.text(message, "No Live Match Found!!");
+        send.catch(message, "No Live Match Found!!");
     } finally {
         await browser.close();
     }

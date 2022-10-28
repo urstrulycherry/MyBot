@@ -13,17 +13,17 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
         const arr = msg.split(" ").filter((item) => item.trim());
         const [cur1, cur2] = arr;
         if (!cur1) {
-            send.text(message, "Please provide currency code(s)");
+            send.catch(message, "Please provide currency code(s)");
             return;
         }
         const res = (!cur2) ? await trigger(cur1, undefined) : await trigger(cur1, cur2);
         if (!res) {
-            send.text(message, incorrect);
+            send.catch(message, incorrect);
             return;
         }
         send.text(message, res);
     } catch (_) {
-        send.text(message, error);
+        send.catch(message, error);
     }
 };
 

@@ -32,6 +32,6 @@ export const yt = async (message: WAWebJS.Message, url: string) => {
         await page.close();
         await browser.close();
     } catch (_) {
-        send.text(message, error);
+        send.catch(message, error);
     }
 };

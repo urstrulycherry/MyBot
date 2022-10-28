@@ -20,7 +20,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
             send.text(message, joke.joke);
         }
     } catch (_) {
-        send.text(message, error);
+        send.catch(message, error);
     }
 };
 

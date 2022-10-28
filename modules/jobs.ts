@@ -13,17 +13,17 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
         const [keyword, location] = arr;
 
         if (!keyword || !location) {
-            send.text(message, "Please provide keyword and location");
+            send.catch(message, "Please provide keyword and location");
             return;
         }
         const text = await trigger(keyword, location);
         if (!text) {
-            send.text(message, "No jobs found");
+            send.catch(message, "No jobs found");
             return;
         }
         send.text(message, text);
     } catch (_) {
-        send.text(message, error);
+        send.catch(message, error);
     }
 };
 

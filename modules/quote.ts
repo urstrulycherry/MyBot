@@ -27,7 +27,7 @@ const trigger = async (message: WAWebJS.Message) => {
         browser.close();
         send.text(message, result);
     } catch (_) {
-        send.text(message, error);
+        send.catch(message, error);
     } finally {
         await browser.close();
     }

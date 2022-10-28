@@ -27,7 +27,7 @@ export const process = async (message: WAWebJS.Message, client: WAWebJS.Client) 
         }
     }
     if (mediaMessage === undefined) {
-        send.text(message, noMediaMessage);
+        send.catch(message, noMediaMessage);
         return;
     }
     trigger(message, mediaMessage, client);
@@ -36,14 +36,14 @@ export const process = async (message: WAWebJS.Message, client: WAWebJS.Client) 
 const trigger = async (message: WAWebJS.Message, mediaMessage: WAWebJS.Message, client: WAWebJS.Client) => {
     mediaMessage.downloadMedia().then((media: WAWebJS.MessageMedia) => {
         if (!(media.mimetype === "image/jpeg" || media.mimetype === "video/mp4")) {
-            send.text(message, incorrectMedia);
+            send.catch(message, incorrectMedia);
             return;
         }
         Util.formatToWebpSticker(media, metaData, client.pupPage).then((stickerMedia: WAWebJS.MessageMedia) => {
             send.sticker(message, stickerMedia);
         });
     }).catch(() => {
-        send.text(message, noMediaMessage);
+        send.catch(message, noMediaMessage);
         return;
     });
 };

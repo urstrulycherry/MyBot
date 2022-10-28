@@ -35,10 +35,10 @@ const trigger = async (message: WAWebJS.Message, search: string) => {
         } else if (src.startsWith("http")) {
             send.url(message, src);
         } else {
-            send.text(message, error);
+            send.catch(message, error);
         }
     } catch (_) {
-        send.text(message, error);
+        send.catch(message, error);
     } finally {
         await browser.close();
     }

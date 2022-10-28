@@ -10,18 +10,23 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     await chat.fetchMessages({ limit: 500 });
     const quotedMsg = await message.getQuotedMessage();
     if (!quotedMsg) {
-        send.text(message, noMedia);
+        send.catch(message, noMedia);
         return;
     }
     if (quotedMsg.hasMedia) {
         const media = await quotedMsg.downloadMedia().catch(() => {
-            send.text(message, noMedia);
+            send.catch(message, noMedia);
             return;
         });
-        if (!media) return;
+        if (!media) {
+            return send.catch(message, noMedia);
+        }
         send.media(message, media);
     } else {
-        send.text(message, quotedMsg.body);
+        if (!quotedMsg.body) {
+            return send.catch(message, noMedia);
+        }
+        return send.text(message, quotedMsg.body);
     }
 };
 

@@ -13,7 +13,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     if (!msg) return;
     const links = helper.getLinksFromString(msg);
     if (links.length === 0) {
-        send.text(message, noUrlFound);
+        send.catch(message, noUrlFound);
         return;
     }
     links.forEach(link => {

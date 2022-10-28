@@ -30,13 +30,13 @@ export const tmd = async (message: WAWebJS.Message, url: string) => {
             }
         }
         if (urls.length === 0) {
-            return send.text(message, noMedia);
+            return send.catch(message, noMedia);
         }
         for (let i = 0; i < urls.length; i++) {
             if (!urls[i]) continue;
             await send.url(message, urls[i]);
         }
     } catch (e) {
-        send.text(message, "Something went wrong");
+        send.catch(message, "Something went wrong");
     }
 };

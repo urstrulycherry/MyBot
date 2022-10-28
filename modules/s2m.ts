@@ -8,7 +8,7 @@ const noMedia = "No media found";
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     console.log("sticker2media");
     if (!message.hasQuotedMsg) {
-        send.text(message, noSticker);
+        send.catch(message, noSticker);
         return;
     }
     const chat = await message.getChat();
@@ -16,7 +16,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     const quotedMsg = await message.getQuotedMessage();
 
     if (!quotedMsg.hasMedia) {
-        send.text(message, noSticker);
+        send.catch(message, noSticker);
         return;
     }
 
@@ -28,7 +28,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
             send.media(message, media);
         }
     }).catch(() => {
-        send.text(message, noMedia);
+        send.catch(message, noMedia);
         return;
     });
 };

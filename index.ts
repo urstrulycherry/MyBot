@@ -2,6 +2,8 @@ import WAWebJS, { Client, LocalAuth } from "whatsapp-web.js";
 import fs from "fs";
 import { join } from "path";
 import qrcode from "qrcode-terminal";
+import { helper } from "./util/helper";
+import { react } from "./util/reply";
 
 const commands = new Map();
 const isTest = process.argv[2] === "test";
@@ -62,12 +64,13 @@ client.on("qr", (qr: string) => {
 client.on("message_create", async (message: WAWebJS.Message) => {
     if (message.isStatus) return;
     if (message.body === "" || !message.body) return;
-    let firstWord = message.body.split(/\s+/g)[0];
+    let firstWord = message.body.split(helper.spliter)[0];
     if (!firstWord[0].match(/^[.!#$]/)) return;
     firstWord = firstWord.slice(1);
     if (!commands.has(firstWord)) {
         return;
     }
+    react.proccessing(message);
     commands.get(firstWord).process(message, client);
 });
 

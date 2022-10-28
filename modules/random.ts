@@ -1,4 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
+import { react } from "../util/reply";
 
 const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
     console.log("Random");
@@ -10,7 +11,11 @@ const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
     const random = Math.floor(Math.random() * participants.length);
     const randomParticipant = participants[random];
     const randomParticipantContact = await client.getContactById(randomParticipant.id._serialized);
-    message.reply(`Random person @${randomParticipant.id.user}`, undefined, { mentions: [randomParticipantContact] });
+    message.reply(`Random person @${randomParticipant.id.user}`, undefined, { mentions: [randomParticipantContact] }).then(() => {
+        react.success(message);
+    }).catch(() => {
+        react.error(message);
+    });
 };
 
 module.exports = {

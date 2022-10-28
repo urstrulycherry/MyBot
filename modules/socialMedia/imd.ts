@@ -11,6 +11,6 @@ export const imd = async (message: WAWebJS.Message, url: string) => {
             send.url(message, mediaUrl);
         });
     } else {
-        send.text(message, noMedia);
+        send.catch(message, noMedia);
     }
 };
