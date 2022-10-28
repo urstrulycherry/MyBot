@@ -14,8 +14,8 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
                 if (!m) {
                     return send.text(message, joke.delivery);
                 }
-                send.text(m, joke.delivery);
-            }, 2500);
+                send.text(m, joke.delivery, false);
+            }, 2000);
         } else {
             send.text(message, joke.joke);
         }

@@ -70,7 +70,7 @@ client.on("message_create", async (message: WAWebJS.Message) => {
     if (!commands.has(firstWord)) {
         return;
     }
-    react.proccessing(message);
+    await react.proccessing(message);
     commands.get(firstWord).process(message, client);
 });
 

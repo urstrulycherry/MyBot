@@ -4,26 +4,33 @@ import pdfkit from "pdfkit";
 
 export class send {
     static fileLimit = 15.5;
-    static text = async (message: Message, text: string) => {
+    static text = async (message: Message, text: string, needReact = true) => {
         const formatter = "```";
         if (text.startsWith(formatter) && text.endsWith(formatter)) {
             text = text.substring(formatter.length, text.length - formatter.length);
         }
-        const reply = await message.reply(`${formatter}${text}${formatter}`)
+        return message.reply(`${formatter}${text}${formatter}`)
+            .then((replyMsg: Message) => {
+                if (needReact) {
+                    react.success(message);
+                }
+                return replyMsg;
+            })
             .catch((e) => {
                 react.error(message);
                 send.error(message, e);
             });
-        if (!reply) return;
-        react.success(message);
-        return reply;
     };
 
     static sticker = async (message: Message, stickerMedia: MessageMedia) => {
         const filename = `./media/stickers/${message.id._serialized}.webp`;
         const buff = Buffer.from(stickerMedia.data, "base64");
         fs.writeFileSync(filename, buff);
-        const reply = await message.reply(MessageMedia.fromFilePath(filename), undefined, { sendMediaAsSticker: true })
+        return message.reply(MessageMedia.fromFilePath(filename), undefined, { sendMediaAsSticker: true })
+            .then((replyMsg: Message) => {
+                react.success(message);
+                return replyMsg;
+            })
             .catch((e) => {
                 react.error(message);
                 send.error(message, e);
@@ -31,9 +38,6 @@ export class send {
             .finally(() => {
                 clearMedia(filename);
             });
-        if (!reply) return;
-        react.success(message);
-        return reply;
     };
 
     static path = async (message: Message, mediaPath: string) => {
@@ -66,26 +70,28 @@ export class send {
         if (mediaSize > send.fileLimit) {
             send.document(message, media);
         } else {
-            const reply = await message.reply(media)
+            return message.reply(media)
+                .then((replyMsg: Message) => {
+                    react.success(message);
+                    return replyMsg;
+                })
                 .catch((e) => {
                     react.error(message);
                     send.error(message, e);
                 });
-            if (!reply) return;
-            react.success(message);
-            return reply;
         }
     };
 
     static document = async (message: Message, media: MessageMedia) => {
-        const reply = await message.reply(media, undefined, { sendMediaAsDocument: true })
+        return message.reply(media, undefined, { sendMediaAsDocument: true })
+            .then((replyMsg: Message) => {
+                react.success(message);
+                return replyMsg;
+            })
             .catch((e) => {
                 react.error(message);
                 send.error(message, e);
             });
-        if (!reply) return;
-        react.success(message);
-        return reply;
     };
 
     static pdf = async (message: Message, files: string[], fileName?: string) => {
