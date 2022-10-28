@@ -10,11 +10,12 @@ export const tmd = async (message: WAWebJS.Message, url: string) => {
         const urls = [];
         const { id } = parseUrl(url);
         const details = getDetails(id);
-        for (let i = 0; i < details.globalObjects.tweets[id].extended_entities.media.length; i++) {
-            if (details.globalObjects.tweets[id].extended_entities.media[i].video_info) {
+        const text = details.globalObjects.tweets[id].text.replace(/(?:https?|ftp):\/\/[\n\S]+/g, "").trim();
+        for (let i = 0; i < details.globalObjects.tweets[id]?.extended_entities?.media?.length; i++) {
+            if (details.globalObjects.tweets[id]?.extended_entities?.media[i]?.video_info) {
                 let maxWidth = -1;
                 let maxWidthIndex = -1;
-                for (let j = 0; j < details.globalObjects.tweets[id].extended_entities.media[i].video_info.variants.length; j++) {
+                for (let j = 0; j < details.globalObjects.tweets[id].extended_entities?.media[i]?.video_info?.variants?.length; j++) {
                     if (details.globalObjects.tweets[id].extended_entities.media[i].video_info.variants[j].content_type === "video/mp4") {
                         if (Number(details.globalObjects.tweets[id].extended_entities.media[i].video_info.variants[j].bitrate) >= maxWidth) {
                             maxWidth = Number(details.globalObjects.tweets[id].extended_entities.media[i].video_info.variants[j].bitrate);
@@ -34,7 +35,11 @@ export const tmd = async (message: WAWebJS.Message, url: string) => {
         }
         for (let i = 0; i < urls.length; i++) {
             if (!urls[i]) continue;
-            await send.url(message, urls[i]);
+            if (i === 0) {
+                await send.url(message, urls[i], text);
+            } else {
+                await send.url(message, urls[i]);
+            }
         }
     } catch (e) {
         send.catch(message, "Something went wrong");
