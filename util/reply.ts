@@ -50,6 +50,9 @@ export class send {
     static url = async (message: Message, mediaUrl: string, text = "") => {
         return MessageMedia.fromUrl(mediaUrl, { unsafeMime: true })
             .then((media: MessageMedia) => {
+                if (media.mimetype.includes("text/html")) {
+                    return send.catch(message, "Invalid media url");
+                }
                 return send.media(message, media, text);
             }).catch((e) => {
                 send.error(message, e);
