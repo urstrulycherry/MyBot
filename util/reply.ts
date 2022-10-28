@@ -9,23 +9,31 @@ export class send {
         if (text.startsWith(formatter) && text.endsWith(formatter)) {
             text = text.substring(formatter.length, text.length - formatter.length);
         }
-        return message.reply(`${formatter}${text}${formatter}`)
+        const reply = await message.reply(`${formatter}${text}${formatter}`)
             .catch((e) => {
+                react.error(message);
                 send.error(message, e);
             });
+        if (!reply) return;
+        react.success(message);
+        return reply;
     };
 
     static sticker = async (message: Message, stickerMedia: MessageMedia) => {
         const filename = `./media/stickers/${message.id._serialized}.webp`;
         const buff = Buffer.from(stickerMedia.data, "base64");
         fs.writeFileSync(filename, buff);
-        return message.reply(MessageMedia.fromFilePath(filename), undefined, { sendMediaAsSticker: true })
+        const reply = await message.reply(MessageMedia.fromFilePath(filename), undefined, { sendMediaAsSticker: true })
             .catch((e) => {
+                react.error(message);
                 send.error(message, e);
             })
             .finally(() => {
                 clearMedia(filename);
             });
+        if (!reply) return;
+        react.success(message);
+        return reply;
     };
 
     static path = async (message: Message, mediaPath: string) => {
@@ -46,6 +54,7 @@ export class send {
 
     static error = async (message: Message, error: Error) => {
         const to = message.fromMe ? message.from : message.to;
+        react.error(message);
         return message.reply(`*From:* ${message.from}\n*To:* ${message.to}\n\n*Error:* ${error}`, to)
             .catch(() => {
                 console.log("Error sending error message");
@@ -57,17 +66,26 @@ export class send {
         if (mediaSize > send.fileLimit) {
             send.document(message, media);
         } else {
-            return message.reply(media)
+            const reply = await message.reply(media)
                 .catch((e) => {
+                    react.error(message);
                     send.error(message, e);
                 });
+            if (!reply) return;
+            react.success(message);
+            return reply;
         }
     };
 
     static document = async (message: Message, media: MessageMedia) => {
-        return message.reply(media, undefined, { sendMediaAsDocument: true }).catch((e) => {
-            send.error(message, e);
-        });
+        const reply = await message.reply(media, undefined, { sendMediaAsDocument: true })
+            .catch((e) => {
+                react.error(message);
+                send.error(message, e);
+            });
+        if (!reply) return;
+        react.success(message);
+        return reply;
     };
 
     static pdf = async (message: Message, files: string[], fileName?: string) => {
@@ -85,6 +103,37 @@ export class send {
             return this.path(message, path);
         }).on("error", (e: Error) => {
             this.error(message, e);
+        });
+    };
+
+    static catch = async (message: Message, text: string) => {
+        react.warning(message);
+        return message.reply(`_${text}_`);
+    };
+}
+
+export class react {
+    static proccessing = async (message: Message) => {
+        return message.react("🔄").catch(() => {
+            return;
+        });
+    };
+
+    static success = async (message: Message) => {
+        return message.react("✅").catch(() => {
+            return;
+        });
+    };
+
+    static error = async (message: Message) => {
+        return message.react("❌").catch(() => {
+            return;
+        });
+    };
+
+    static warning = async (message: Message) => {
+        return message.react("⚠️").catch(() => {
+            return;
         });
     };
 }
