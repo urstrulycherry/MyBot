@@ -6,7 +6,7 @@ import { send } from "../util/reply";
 const process = async (message: WAWebJS.Message) => {
     console.log("live Cricket!!");
     const msg = await helper.getMsgFromBody(message);
-    if (!msg) return;
+    if (!msg) return send.catch(message, "Enter at least one team name");
     const browser = await puppeteer.launch();
     try {
         const query = `live cricket score ${msg}`;
