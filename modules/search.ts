@@ -23,7 +23,7 @@ const trigger = async (message: WAWebJS.Message, search: string) => {
         const selector = "#islrg > div.islrc > div:nth-child(2) > a.wXeWr.islib.nfEiy";
         await page.waitForSelector(selector, { timeout: 5000 });
         await page.click(selector);
-        const imgSelector = "#Sva75c > div > div > div.pxAole > div.tvh9oe.BIB1wf > c-wiz > div > div.OUZ5W > div.zjoqD > div.qdnLaf.isv-id.b0vFpe > div > a > img";
+        const imgSelector = "#Sva75c > div > div > div > div.pxAole > div.tvh9oe.BIB1wf > c-wiz > div.nIWXKc.JgfpDb.cZEg1e > div.OUZ5W > div.zjoqD > div.qdnLaf.isv-id.b0vFpe > div > a > img";
         await page.waitForSelector(imgSelector);
         await new Promise(r => setTimeout(r, 5000));
         const src = await page.$eval(imgSelector, (img) => img.getAttribute("src"));
