@@ -72,7 +72,7 @@ client.on("message_create", async (message: WAWebJS.Message) => {
     }
     await react.proccessing(message);
     const chat = await message.getChat();
-    let options!: MessageSendOptions;
+    let options: MessageSendOptions = {};
     if (chat.isGroup) {
         options = await helper.processOptions(message, client, chat as WAWebJS.GroupChat);
     }
