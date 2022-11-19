@@ -13,7 +13,7 @@ const metaData = {
     author: "MyBot",
     categories: []
 };
-export const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
+export const process = async (message: WAWebJS.Message, client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     console.log("sticker");
     let mediaMessage: Message | undefined;
     if (message.hasMedia) {
@@ -27,24 +27,21 @@ export const process = async (message: WAWebJS.Message, client: WAWebJS.Client) 
         }
     }
     if (mediaMessage === undefined) {
-        send.catch(message, noMediaMessage);
-        return;
+        return send.catch(message, noMediaMessage);
     }
-    trigger(message, mediaMessage, client);
+    trigger(message, options, mediaMessage, client);
 };
 
-const trigger = async (message: WAWebJS.Message, mediaMessage: WAWebJS.Message, client: WAWebJS.Client) => {
+const trigger = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOptions, mediaMessage: WAWebJS.Message, client: WAWebJS.Client) => {
     mediaMessage.downloadMedia().then((media: WAWebJS.MessageMedia) => {
         if (!(media.mimetype === "image/jpeg" || media.mimetype === "video/mp4")) {
-            send.catch(message, incorrectMedia);
-            return;
+            return send.catch(message, incorrectMedia);
         }
         Util.formatToWebpSticker(media, metaData, client.pupPage).then((stickerMedia: WAWebJS.MessageMedia) => {
-            send.sticker(message, stickerMedia);
+            send.sticker(message, options, stickerMedia);
         });
     }).catch(() => {
-        send.catch(message, noMediaMessage);
-        return;
+        return send.catch(message, noMediaMessage);
     });
 };
 

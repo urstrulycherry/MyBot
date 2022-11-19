@@ -1,6 +1,6 @@
 {
   "name": "mybot",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "It is an automated bot that performs numerous actions.",
   "main": "index.js",
   "type": "commonjs",
@@ -30,7 +30,7 @@
     "instagram-url-direct": "^1.0.12",
     "is-animated": "^2.0.2",
     "jimp": "^0.16.2",
-    "mathjs": "^11.3.3",
+    "mathjs": "^11.4.0",
     "pdfkit": "^0.13.0",
     "puppeteer": "^19.2.2",
     "qrcode-terminal": "^0.12.0",

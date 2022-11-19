@@ -6,17 +6,17 @@ import { helper } from "../util/helper";
 
 const arts = ["Paint", "HDR", "Polygon", "Gouache", "Realistic", "Comic", "Line-Art", "Malevolent", "Meme", "Vibrant", "HD", "Blacklight", "Dark Fantasy"];
 const error = "Something went wrong, please try again later";
-const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
+const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     try {
         console.log("Image");
         const msg = await helper.getMsgFromBody(message);
-        if (!msg) return;
+        if (!msg) return send.catch(message);
         // eslint-disable-next-line prefer-const
         let [prompt, art] = msg.split(" --");
         if (!art) art = "Realistic";
         if (!arts.includes(art)) art = "Realistic";
-        if (!prompt || !art) return;
-        trigger(prompt, art, message).catch(() => {
+        if (!prompt || !art) return send.catch(message);
+        trigger(prompt, art, message, options).catch(() => {
             send.catch(message, "Something went wrong");
         });
     } catch (_) {
@@ -24,7 +24,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
     }
 };
 
-const trigger = async (prompt: string, art: string, message: WAWebJS.Message) => {
+const trigger = async (prompt: string, art: string, message: WAWebJS.Message, options: WAWebJS.MessageSendOptions) => {
     const browser = await puppeteer.launch();
     try {
         const page = await browser.newPage();
@@ -40,7 +40,7 @@ const trigger = async (prompt: string, art: string, message: WAWebJS.Message) =>
         const filePath = `media/temp/${message.id._serialized}.jpeg`;
         const image = await Jimp.read(src);
         await image.crop(76, 226, 930, 1551).writeAsync(filePath);
-        send.path(message, filePath);
+        send.path(message, options, filePath);
     } catch (_) {
         send.catch(message, error);
     } finally {

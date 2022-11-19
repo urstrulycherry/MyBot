@@ -1,10 +1,10 @@
 import WAWebJS from "whatsapp-web.js";
 import { react } from "../util/reply";
 
-const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
+const process = async (message: WAWebJS.Message, client: WAWebJS.Client, _options: WAWebJS.MessageSendOptions) => {
     console.log("Random");
     const chat: WAWebJS.Chat = await message.getChat();
-    if (!chat.isGroup) return;
+    if (!chat.isGroup) return react.error(message);
     const group: WAWebJS.GroupChat = chat as WAWebJS.GroupChat;
     const participants: WAWebJS.GroupParticipant[] = group.participants;
 

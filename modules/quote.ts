@@ -5,12 +5,12 @@ import { send } from "../util/reply";
 const quotePath = '//*[@id="mf-qotd"]/div/div[2]/table/tbody/tr[1]/td/table/tbody/tr/td[3]/table/tbody/tr[1]/td';
 const authorPath = '//*[@id="mf-qotd"]/div/div[2]/table/tbody/tr[1]/td/table/tbody/tr/td[3]/table/tbody/tr[2]/td';
 
-const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
+const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     console.log("quote");
-    trigger(message);
+    trigger(message, options);
 };
 
-const trigger = async (message: WAWebJS.Message) => {
+const trigger = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOptions) => {
     const error = "Something went wrong, please try again later";
     const browser = await puppeteer.launch();
     try {
@@ -25,7 +25,7 @@ const trigger = async (message: WAWebJS.Message) => {
         const emoji2 = "☀️☕➡️️😋";
         const result = `*${new Date().toDateString()}* ${emoji1}\n${quoteText?.trim()}\n_${authorName?.substring(1, authorName.length - 2).trim()}_\n_Have a Good Day!_ ${emoji2}`;
         browser.close();
-        send.text(message, result);
+        send.text(message, options, result);
     } catch (_) {
         send.catch(message, error);
     } finally {

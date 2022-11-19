@@ -5,13 +5,13 @@ import Jimp from "jimp";
 import fs from "fs";
 import { helper } from "../util/helper";
 
-const process = async (message: WAWebJS.Message) => {
+const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     const paths: string[] = [];
     console.log("manga search!");
     const browser = await puppeteer.launch();
     try {
         const msg = await helper.getMsgFromBody(message);
-        if (!msg) return;
+        if (!msg) return send.catch(message);
         if (msg.length < 1) {
             return send.catch(message, "Please enter manga name and chapter!");
         }
@@ -31,7 +31,7 @@ const process = async (message: WAWebJS.Message) => {
             const image = await Jimp.read(images[i]);
             await image.writeAsync(filePath);
         }
-        await send.pdf(message, paths, msg);
+        await send.pdf(message, options, paths, msg);
         fs.rmSync(dir, { recursive: true, force: true });
     } catch (_) {
         send.catch(message, "Something went wrong, please try again later");

@@ -3,7 +3,7 @@ import WAWebJS from "whatsapp-web.js";
 import { helper } from "../util/helper";
 import { send } from "../util/reply";
 
-const process = async (message: WAWebJS.Message) => {
+const process = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOptions) => {
     console.log("live Cricket!!");
     const msg = await helper.getMsgFromBody(message);
     if (!msg) return send.catch(message, "Enter at least one team name");
@@ -20,7 +20,7 @@ const process = async (message: WAWebJS.Message) => {
         const element = await page.$(selector);
         const filePath = `media/images/${message.id._serialized}.jpg`;
         await element?.screenshot({ path: filePath });
-        send.path(message, filePath);
+        send.path(message, options, filePath);
         await browser.close();
     } catch (_) {
         send.catch(message, "No Live Match Found!!");

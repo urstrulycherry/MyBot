@@ -1,4 +1,4 @@
-import WAWebJS, { Client, LocalAuth } from "whatsapp-web.js";
+import WAWebJS, { Client, LocalAuth, MessageSendOptions } from "whatsapp-web.js";
 import fs from "fs";
 import { join } from "path";
 import qrcode from "qrcode-terminal";
@@ -71,7 +71,12 @@ client.on("message_create", async (message: WAWebJS.Message) => {
         return;
     }
     await react.proccessing(message);
-    commands.get(firstWord).process(message, client);
+    const chat = await message.getChat();
+    let options!: MessageSendOptions;
+    if (chat.isGroup) {
+        options = await helper.processOptions(message, client, chat as WAWebJS.GroupChat);
+    }
+    commands.get(firstWord).process(message, client, options);
 });
 
 if (platform === "win32" || platform === "linux") {

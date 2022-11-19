@@ -4,18 +4,18 @@ import { helper } from "../util/helper";
 import { send } from "../util/reply";
 
 const error = "Sorry, I couldn't find any images for that search.";
-const process = async (message: WAWebJS.Message) => {
+const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     console.log("Image Search");
     try {
         const msg = await helper.getMsgFromBody(message);
-        if (!msg) return;
-        trigger(message, msg);
+        if (!msg) return send.catch(message);
+        trigger(message, options, msg);
     } catch (_) {
-        send.text(message, error);
+        send.text(message, options, error);
     }
 };
 
-const trigger = async (message: WAWebJS.Message, search: string) => {
+const trigger = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOptions, search: string) => {
     const browser = await puppeteer.launch();
     try {
         const page = await browser.newPage();
@@ -27,13 +27,13 @@ const trigger = async (message: WAWebJS.Message, search: string) => {
         await page.waitForSelector(imgSelector);
         await new Promise(r => setTimeout(r, 5000));
         const src = await page.$eval(imgSelector, (img) => img.getAttribute("src"));
-        if (!src) return;
+        if (!src) return send.catch(message);
         await browser.close();
         if (src.startsWith("data")) {
             const media = new MessageMedia("image/jpeg", src.split(",")[1], "image.jpeg");
-            send.media(message, media);
+            send.media(message, options, media);
         } else if (src.startsWith("http")) {
-            send.url(message, src);
+            send.url(message, options, src);
         } else {
             send.catch(message, error);
         }

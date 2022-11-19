@@ -3,25 +3,23 @@ import { send } from "../util/reply";
 import puppeteer from "puppeteer";
 import { helper } from "../util/helper";
 
-const process = async (message: WAWebJS.Message, _client: WAWebJS.Client) => {
+const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     const error = "Something went wrong, please try again later";
     try {
         console.log("Processing jobs");
         const msg = await helper.getMsgFromBody(message);
-        if (!msg) return;
+        if (!msg) return send.catch(message);
         const arr = msg.split("--").filter((item) => item.trim());
         const [keyword, location] = arr;
 
         if (!keyword || !location) {
-            send.catch(message, "Please provide keyword and location");
-            return;
+            return send.catch(message, "Please provide keyword and location");
         }
         const text = await trigger(keyword, location);
         if (!text) {
-            send.catch(message, "No jobs found");
-            return;
+            return send.catch(message, "No jobs found");
         }
-        send.text(message, text);
+        send.text(message, options, text);
     } catch (_) {
         send.catch(message, error);
     }

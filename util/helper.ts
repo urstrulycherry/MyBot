@@ -1,7 +1,15 @@
-import WAWebJS from "whatsapp-web.js";
+import WAWebJS, { MessageSendOptions } from "whatsapp-web.js";
+
+const Executer = {
+    TagAll: "!",
+    TagAdmins: "#",
+    TagNonAdmins: "$",
+    TagNone: "."
+};
 
 export class helper {
     static readonly spliter = /\s+/g;
+
     static readonly isValidHttpUrl = (u: string) => {
         let url: URL;
         try {
@@ -36,5 +44,52 @@ export class helper {
         } catch (error) {
             return undefined;
         }
+    };
+
+    static getAdmins = async (message: WAWebJS.Message, client: WAWebJS.Client, groupChat: WAWebJS.GroupChat) => {
+        const participants: WAWebJS.Contact[] = [];
+        for (const participant of groupChat.participants) {
+            if (participant.isAdmin) {
+                participants.push(await client.getContactById(participant.id._serialized));
+            }
+        }
+        return participants;
+    };
+
+    static getAllParticipants = async (message: WAWebJS.Message, client: WAWebJS.Client, groupChat: WAWebJS.GroupChat) => {
+        const participants: WAWebJS.Contact[] = [];
+        for (const participant of groupChat.participants) {
+            participants.push(await client.getContactById(participant.id._serialized));
+        }
+        return participants;
+    };
+
+    static getNonAdmins = async (message: WAWebJS.Message, client: WAWebJS.Client, groupChat: WAWebJS.GroupChat) => {
+        const participants: WAWebJS.Contact[] = [];
+        for (const participant of groupChat.participants) {
+            if (!participant.isAdmin) {
+                participants.push(await client.getContactById(participant.id._serialized));
+            }
+        }
+        return participants;
+    };
+
+    static processOptions = async (message: WAWebJS.Message, client: WAWebJS.Client, groupChat: WAWebJS.GroupChat) => {
+        const executer = message.body[0];
+        const options: MessageSendOptions = {};
+        switch (executer) {
+            case Executer.TagAll:
+                options.mentions = await this.getAllParticipants(message, client, groupChat);
+                break;
+            case Executer.TagAdmins:
+                options.mentions = await this.getAdmins(message, client, groupChat);
+                break;
+            case Executer.TagNonAdmins:
+                options.mentions = await this.getNonAdmins(message, client, groupChat);
+                break;
+            default:
+                break;
+        }
+        return options;
     };
 }

@@ -5,7 +5,7 @@ import { send } from "../../util/reply";
 
 const noMedia = "No media found";
 
-export const tmd = async (message: WAWebJS.Message, url: string) => {
+export const tmd = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOptions, url: string) => {
     try {
         const urls = [];
         const { id } = parseUrl(url);
@@ -36,9 +36,9 @@ export const tmd = async (message: WAWebJS.Message, url: string) => {
         for (let i = 0; i < urls.length; i++) {
             if (!urls[i]) continue;
             if (i === 0) {
-                await send.url(message, urls[i], text);
+                await send.url(message, options, urls[i], text);
             } else {
-                await send.url(message, urls[i]);
+                await send.url(message, options, urls[i]);
             }
         }
     } catch (e) {
