@@ -17,6 +17,11 @@ This is an automated WhatsApp bot which performs tasks like downloading media fr
 
 The associated process will be finished when a new message is formed with the message body's first word including the name of the module prefixed with "." or "!" or "#" or "$".
 
+> To tag all participants use &emsp;&emsp;"!"<br>
+> To tag only admins use &emsp;&emsp;&emsp;"#"<br>
+> To tag only non-admins use &emsp;"$"<br>
+> To tag none use &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; "."<br>
+
 ### How to Get Social Media Content
 
 ```
@@ -72,7 +77,11 @@ For testing
 
 ```ts
 import WAWebJS from "whatsapp-web.js"
-const process = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
+const process = async (
+  message: WAWebJS.Message,
+  client: WAWebJS.Client,
+  options: WAWebJS.MessageSendOptions
+) => {
   // Your module code here
 }
 module.exports = {
