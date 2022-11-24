@@ -10,6 +10,7 @@ export const imd = async (message: WAWebJS.Message, options: WAWebJS.MessageSend
         url_list: string[];
     }
     instagramGetUrl(url).then((res: igRes) => {
+        console.log(res);
         if (res.results_number > 0) {
             res.url_list.forEach((mediaUrl: string) => {
                 send.url(message, options, mediaUrl);
