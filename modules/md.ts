@@ -1,6 +1,6 @@
 import WAWebJS from "whatsapp-web.js";
 import { tmd } from "./socialMedia/tmd";
-// import { imd } from "./socialMedia/imd";
+import { imd } from "./socialMedia/imd";
 import { send } from "../util/reply";
 import { yt } from "./socialMedia/yt";
 import { helper } from "../util/helper";
@@ -19,8 +19,8 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
         if (url.hostname === "twitter.com") {
             tmd(message, options, link);
         } else if (url.hostname === "www.instagram.com") {
-            send.catch(message, "Instagram is not available right now");
-            // imd(message, options, link);
+            // send.catch(message, "Instagram is not available right now");
+            imd(message, options, link);
         } else if (url.hostname === "www.youtube.com" || url.hostname === "youtu.be" || url.hostname === "youtube.com" || url.hostname === "m.youtube.com") {
             yt(message, options, link);
         } else {
