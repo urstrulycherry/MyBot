@@ -92,4 +92,19 @@ export class helper {
         }
         return options;
     };
+
+    static isAdmin = async (message: WAWebJS.Message, client: WAWebJS.Client, author = false) => {
+        const chat = await message.getChat();
+        if (!chat.isGroup) return false;
+        const group: WAWebJS.GroupChat = chat as WAWebJS.GroupChat;
+        let user: string | undefined;
+        if (!author || message.fromMe) {
+            user = client.info.wid._serialized;
+        } else {
+            user = message.author;
+        }
+        if (!user) return false;
+        const participants = group.participants;
+        return participants.find((participant) => participant.id._serialized === user)?.isAdmin;
+    };
 }
