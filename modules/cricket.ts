@@ -30,6 +30,6 @@ const process = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOpt
 };
 
 module.exports = {
-    name: "cricket",
+    name: "cric",
     process
 };
