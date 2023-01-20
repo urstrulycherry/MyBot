@@ -1,7 +1,7 @@
 /* eslint-disable */
 import WAWebJS from "whatsapp-web.js";
-import { helper } from "../util/helper";
-import { react, send } from "../util/reply";
+import { Helper } from "../util/helper";
+import { react, Send } from "../util/reply";
 
 const process = async (message: WAWebJS.Message, client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     console.log("delete");
@@ -23,7 +23,7 @@ const process = async (message: WAWebJS.Message, client: WAWebJS.Client, options
 const trigger = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
     const chat = await message.getChat();
     if (chat.isGroup) {
-        if (await helper.isAdmin(message, client)) {
+        if (await Helper.isAdmin(message, client)) {
             await message.delete(true);
             return true;
         } else {

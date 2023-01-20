@@ -1,5 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
-import { send } from "../../util/reply";
+import { Send } from "../../util/reply";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const instagramGetUrl = require("instagram-url-direct");
 const noMedia = "No media found";
@@ -15,12 +15,12 @@ export const imd = async (message: WAWebJS.Message, options: WAWebJS.MessageSend
                 if (mediaUrl.includes("https://media.cl-converter.com")) {
                     mediaUrl = decodeURIComponent(mediaUrl).split("uri=")[1].split(" ")[0];
                 }
-                send.url(message, options, mediaUrl);
+                Send.url(message, options, mediaUrl);
             });
         } else {
-            send.catch(message, noMedia);
+            Send.catch(message, noMedia);
         }
     }).catch(() => {
-        send.catch(message, error);
+        Send.catch(message, error);
     });
 };

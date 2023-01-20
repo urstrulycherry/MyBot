@@ -1,26 +1,26 @@
 import WAWebJS from "whatsapp-web.js";
-import { helper } from "../util/helper";
-import { send } from "../util/reply";
+import { Helper } from "../util/helper";
+import { Send } from "../util/reply";
 
 const incorrect = "Incorrect currency code";
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     console.log("economy");
     const error = "Something went wrong, please try again later";
     try {
-        const msg = await helper.getMsgFromBody(message);
-        if (!msg) return send.catch(message);
+        const msg = await Helper.getMsgFromBody(message);
+        if (!msg) return Send.catch(message);
         const arr = msg.split(" ").filter((item) => item.trim());
         const [cur1, cur2] = arr;
         if (!cur1) {
-            return send.catch(message, "Please provide currency code(s)");
+            return Send.catch(message, "Please provide currency code(s)");
         }
         const res = (!cur2) ? await trigger(cur1, undefined) : await trigger(cur1, cur2);
         if (!res) {
-            return send.catch(message, incorrect);
+            return Send.catch(message, incorrect);
         }
-        send.text(message, options, res);
+        Send.text(message, options, res);
     } catch (_) {
-        send.catch(message, error);
+        Send.catch(message, error);
     }
 };
 

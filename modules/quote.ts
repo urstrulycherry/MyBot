@@ -1,6 +1,6 @@
 import WAWebJS from "whatsapp-web.js";
 import puppeteer from "puppeteer";
-import { send } from "../util/reply";
+import { Send } from "../util/reply";
 
 const quotePath = '//*[@id="mf-qotd"]/div/div[2]/table/tbody/tr[1]/td/table/tbody/tr/td[3]/table/tbody/tr[1]/td';
 const authorPath = '//*[@id="mf-qotd"]/div/div[2]/table/tbody/tr[1]/td/table/tbody/tr/td[3]/table/tbody/tr[2]/td';
@@ -25,9 +25,9 @@ const trigger = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOpt
         const emoji2 = "☀️☕➡️️😋";
         const result = `*${new Date().toDateString()}* ${emoji1}\n${quoteText?.trim()}\n_${authorName?.substring(1, authorName.length - 2).trim()}_\n_Have a Good Day!_ ${emoji2}`;
         browser.close();
-        send.text(message, options, result);
+        Send.text(message, options, result);
     } catch (_) {
-        send.catch(message, error);
+        Send.catch(message, error);
     } finally {
         await browser.close();
     }

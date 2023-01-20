@@ -1,13 +1,7 @@
 import WAWebJS, { MessageSendOptions } from "whatsapp-web.js";
+import { Executer, testPrefix } from "./global";
 
-const Executer = {
-    TagAll: "!",
-    TagAdmins: "#",
-    TagNonAdmins: "$",
-    TagNone: "."
-};
-
-export class helper {
+export class Helper {
     static readonly spliter = /\s+/g;
 
     static readonly isValidHttpUrl = (u: string) => {
@@ -106,5 +100,17 @@ export class helper {
         if (!user) return false;
         const participants = group.participants;
         return participants.find((participant) => participant.id._serialized === user)?.isAdmin;
+    };
+
+    static getCommandName = (body: string, isTest: boolean) => {
+        let command = body.split(this.spliter)[0];
+        if (!command) return undefined;
+        if (!command[0].match(/^[.!#$]/)) return undefined;
+        command = command.slice(1);
+        if (isTest) {
+            if (!command.startsWith(testPrefix)) return undefined;
+            command = command.slice(testPrefix.length);
+        }
+        return command;
     };
 }

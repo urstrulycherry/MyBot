@@ -1,11 +1,9 @@
 import WAWebJS, { Client, LocalAuth, MessageSendOptions } from "whatsapp-web.js";
-import fs from "fs";
-import { join } from "path";
 import qrcode from "qrcode-terminal";
-import { helper } from "./util/helper";
+import { Helper } from "./util/helper";
 import { react } from "./util/reply";
+import { Modules } from "./util/modules";
 
-const commands = new Map();
 const isTest = process.argv[2] === "test";
 const platform = process.platform;
 
@@ -28,28 +26,9 @@ const client: WAWebJS.Client =
 
 
 client.on("ready", async () => {
-    fs.readdirSync(join(__dirname, "modules")).forEach((file: string) => {
-        if (file.endsWith(".ts")) {
-            import(join(__dirname, "modules", file)).then((module) => {
-                if (isTest) {
-                    commands.set(`test_${module.name}`, module);
-                } else {
-                    commands.set(module.name, module);
-                }
-                console.log(`Loaded ${module.name}`);
-            });
-        }
-    });
-
-    // create folder media/images media/stickers media/videos media/temp if not exist
-    const folders = ["media", "media/images", "media/stickers", "media/videos", "media/temp"];
-    folders.forEach((folder) => {
-        if (!fs.existsSync(join(__dirname, folder))) {
-            fs.mkdirSync(join(__dirname, folder));
-        }
-    });
-
     console.log(`${client.info.wid._serialized} is ready!`);
+    Modules.setup();
+    Modules.loadModules();
 });
 
 client.on("qr", (qr: string) => {
@@ -64,19 +43,18 @@ client.on("qr", (qr: string) => {
 client.on("message_create", async (message: WAWebJS.Message) => {
     if (message.isStatus) return;
     if (message.body === "" || !message.body) return;
-    let firstWord = message.body.split(helper.spliter)[0];
-    if (!firstWord[0].match(/^[.!#$]/)) return;
-    firstWord = firstWord.slice(1);
-    if (!commands.has(firstWord)) {
+    const firstWord = Helper.getCommandName(message.body, isTest);
+    if (!firstWord) return;
+    if (!Modules.isModuleAvailable(firstWord, message.fromMe)) {
         return;
     }
     await react.proccessing(message);
     const chat = await message.getChat();
     let options: MessageSendOptions = {};
     if (chat.isGroup) {
-        options = await helper.processOptions(message, client, chat as WAWebJS.GroupChat);
+        options = await Helper.processOptions(message, client, chat as WAWebJS.GroupChat);
     }
-    commands.get(firstWord).process(message, client, options);
+    Modules.commands.get(firstWord).process(message, client, options);
 });
 
 if (platform === "win32" || platform === "linux") {

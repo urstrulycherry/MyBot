@@ -1,27 +1,27 @@
 import WAWebJS from "whatsapp-web.js";
-import { send } from "../util/reply";
+import { Send } from "../util/reply";
 import puppeteer from "puppeteer";
-import { helper } from "../util/helper";
+import { Helper } from "../util/helper";
 
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     const error = "Something went wrong, please try again later";
     try {
         console.log("Processing jobs");
-        const msg = await helper.getMsgFromBody(message);
-        if (!msg) return send.catch(message);
+        const msg = await Helper.getMsgFromBody(message);
+        if (!msg) return Send.catch(message);
         const arr = msg.split("--").filter((item) => item.trim());
         const [keyword, location] = arr;
 
         if (!keyword || !location) {
-            return send.catch(message, "Please provide keyword and location");
+            return Send.catch(message, "Please provide keyword and location");
         }
         const text = await trigger(keyword, location);
         if (!text) {
-            return send.catch(message, "No jobs found");
+            return Send.catch(message, "No jobs found");
         }
-        send.text(message, options, text);
+        Send.text(message, options, text);
     } catch (_) {
-        send.catch(message, error);
+        Send.catch(message, error);
     }
 };
 

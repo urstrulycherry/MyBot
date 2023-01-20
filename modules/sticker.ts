@@ -1,7 +1,7 @@
 import WAWebJS, { Message } from "whatsapp-web.js";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
-import { send } from "../util/reply";
+import { Send } from "../util/reply";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Util = require("whatsapp-web.js/src/util/Util");
 Util.setFfmpegPath(ffmpegPath);
@@ -27,7 +27,7 @@ export const process = async (message: WAWebJS.Message, client: WAWebJS.Client, 
         }
     }
     if (mediaMessage === undefined) {
-        return send.catch(message, noMediaMessage);
+        return Send.catch(message, noMediaMessage);
     }
     trigger(message, options, mediaMessage, client);
 };
@@ -35,13 +35,13 @@ export const process = async (message: WAWebJS.Message, client: WAWebJS.Client, 
 const trigger = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOptions, mediaMessage: WAWebJS.Message, client: WAWebJS.Client) => {
     mediaMessage.downloadMedia().then((media: WAWebJS.MessageMedia) => {
         if (!(media.mimetype === "image/jpeg" || media.mimetype === "video/mp4")) {
-            return send.catch(message, incorrectMedia);
+            return Send.catch(message, incorrectMedia);
         }
         Util.formatToWebpSticker(media, metaData, client.pupPage).then((stickerMedia: WAWebJS.MessageMedia) => {
-            send.sticker(message, options, stickerMedia);
+            Send.sticker(message, options, stickerMedia);
         });
     }).catch(() => {
-        return send.catch(message, noMediaMessage);
+        return Send.catch(message, noMediaMessage);
     });
 };
 

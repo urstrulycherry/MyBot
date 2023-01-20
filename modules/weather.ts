@@ -1,13 +1,13 @@
 import WAWebJS from "whatsapp-web.js";
 import puppeteer from "puppeteer";
-import { helper } from "../util/helper";
-import { send } from "../util/reply";
+import { Helper } from "../util/helper";
+import { Send } from "../util/reply";
 
 const error = "No weather data found";
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     console.log("Weather");
-    const msg = await helper.getMsgFromBody(message);
-    if (!msg) return send.catch(message);
+    const msg = await Helper.getMsgFromBody(message);
+    if (!msg) return Send.catch(message);
     trigger(msg, options, message);
 };
 
@@ -27,13 +27,13 @@ const trigger = async (msg: string, options: WAWebJS.MessageSendOptions, message
             // ignore
         }
         const element = await page.$("#wob_wc");
-        if (!element) return send.catch(message, error);
+        if (!element) return Send.catch(message, error);
         const filePath = `./media/temp/weather_${new Date().getTime()}.png`;
         await element.screenshot({ path: filePath });
         await browser.close();
-        send.path(message, options, filePath);
+        Send.path(message, options, filePath);
     } catch (_) {
-        send.catch(message, error);
+        Send.catch(message, error);
     } finally {
         await browser.close();
     }

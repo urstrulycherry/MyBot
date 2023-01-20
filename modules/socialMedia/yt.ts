@@ -1,6 +1,6 @@
 import WAWebJS from "whatsapp-web.js";
 import puppeteer from "puppeteer";
-import { send } from "../../util/reply";
+import { Send } from "../../util/reply";
 import ytdl from "ytdl-core";
 
 export const yt = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOptions, url: string) => {
@@ -14,7 +14,7 @@ export const yt = async (message: WAWebJS.Message, options: WAWebJS.MessageSendO
         const video = formats.filter((f) => f.hasVideo).sort((a, b) => b.width! - a.width!)[0];
         const videoUrl = video.url;
         if (duration < 70) {
-            return send.url(message, options, videoUrl);
+            return Send.url(message, options, videoUrl);
         }
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
@@ -28,10 +28,10 @@ export const yt = async (message: WAWebJS.Message, options: WAWebJS.MessageSendO
         await page.waitForSelector(selector, { timeout: 5000 });
         let link = await page.$eval(selector, div => div.textContent);
         link = `https://${link?.trim()}`;
-        await send.text(message, options, link);
+        await Send.text(message, options, link);
         await page.close();
         await browser.close();
     } catch (_) {
-        send.catch(message, error);
+        Send.catch(message, error);
     }
 };

@@ -1,16 +1,16 @@
 import WAWebJS from "whatsapp-web.js";
 import axios from "axios";
-import { send } from "../util/reply";
+import { Send } from "../util/reply";
 
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     console.log("Memes");
     const error = "Something went wrong, please try again later";
     try {
-        const meme = await axios("https://meme-api.herokuapp.com/gimme")
+        const meme = await axios("https://meme-api.com/gimme")
             .then(res => res.data);
-        send.url(message, options, meme.url);
+        Send.url(message, options, meme.url);
     } catch (_) {
-        send.catch(message, error);
+        Send.catch(message, error);
     }
 };
 

@@ -1,7 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { parseUrl, getDetails } = require("twitter-url");
-import { send } from "../../util/reply";
+import { Send } from "../../util/reply";
 
 const noMedia = "No media found";
 
@@ -31,17 +31,17 @@ export const tmd = async (message: WAWebJS.Message, options: WAWebJS.MessageSend
             }
         }
         if (urls.length === 0) {
-            return send.catch(message, noMedia);
+            return Send.catch(message, noMedia);
         }
         for (let i = 0; i < urls.length; i++) {
             if (!urls[i]) continue;
             if (i === 0) {
-                await send.url(message, options, urls[i], text);
+                await Send.url(message, options, urls[i], text);
             } else {
-                await send.url(message, options, urls[i]);
+                await Send.url(message, options, urls[i]);
             }
         }
     } catch (e) {
-        send.catch(message, "Something went wrong");
+        Send.catch(message, "Something went wrong");
     }
 };

@@ -2,7 +2,7 @@ import WAWebJS, { Message, MessageMedia } from "whatsapp-web.js";
 import fs from "fs";
 import pdfkit from "pdfkit";
 
-export class send {
+export class Send {
     static fileLimit = 15.5;
     static text = async (message: Message, options: WAWebJS.MessageSendOptions, text: string, needReact = true) => {
         const formatter = "```";
@@ -18,7 +18,21 @@ export class send {
             })
             .catch((e) => {
                 react.error(message);
-                send.error(message, e);
+                Send.error(message, e);
+            });
+    };
+
+    static formattedText = async (message: Message, options: WAWebJS.MessageSendOptions, text: string, needReact = true) => {
+        return message.reply(text, undefined, options)
+            .then((replyMsg: Message) => {
+                if (needReact) {
+                    react.success(message);
+                }
+                return replyMsg;
+            })
+            .catch((e) => {
+                react.error(message);
+                Send.error(message, e);
             });
     };
 
@@ -34,7 +48,7 @@ export class send {
             })
             .catch((e) => {
                 react.error(message);
-                send.error(message, e);
+                Send.error(message, e);
             })
             .finally(() => {
                 clearMedia(filename);
@@ -42,7 +56,7 @@ export class send {
     };
 
     static path = async (message: Message, options: WAWebJS.MessageSendOptions, mediaPath: string, text = "") => {
-        return send.media(message, options, MessageMedia.fromFilePath(mediaPath), text)
+        return Send.media(message, options, MessageMedia.fromFilePath(mediaPath), text)
             .finally(() => {
                 clearMedia(mediaPath);
             });
@@ -52,11 +66,11 @@ export class send {
         return MessageMedia.fromUrl(mediaUrl, { unsafeMime: true })
             .then((media: MessageMedia) => {
                 if (media.mimetype.includes("text/html")) {
-                    return send.catch(message, "Invalid media url");
+                    return Send.catch(message, "Invalid media url");
                 }
-                return send.media(message, options, media, text);
+                return Send.media(message, options, media, text);
             }).catch((e) => {
-                send.error(message, e);
+                Send.error(message, e);
             });
     };
 
@@ -71,8 +85,8 @@ export class send {
 
     static media = async (message: Message, options: WAWebJS.MessageSendOptions, media: MessageMedia, text = "") => {
         const mediaSize = media.data.length * 3 / 4 / 1024 / 1024;
-        if (mediaSize > send.fileLimit) {
-            send.document(message, options, media);
+        if (mediaSize > Send.fileLimit) {
+            Send.document(message, options, media);
         } else {
             options.caption = text;
             return message.reply(media, undefined, options)
@@ -82,7 +96,7 @@ export class send {
                 })
                 .catch((e) => {
                     react.error(message);
-                    send.error(message, e);
+                    Send.error(message, e);
                 });
         }
     };
@@ -96,7 +110,7 @@ export class send {
             })
             .catch((e) => {
                 react.error(message);
-                send.error(message, e);
+                Send.error(message, e);
             });
     };
 
