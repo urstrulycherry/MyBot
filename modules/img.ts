@@ -35,16 +35,20 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
 };
 
 const trigger = async (prompt: string, art: string, message: WAWebJS.Message, options: WAWebJS.MessageSendOptions) => {
+    const inputSelector = ".TextInput__Input-sc-1qnfwgf-1";
+    const buttonSelector = ".iMLenh";
+    const outputSelector = ".gbeYse";
+    const outputImageSelector = "#blur-overlay > div > div > div > div.PaneContainers__PaneDisplayContainer-sc-9ic5sr-1.DreamOutput__PaneDisplayContainer-sc-q3wcit-0.jTkaiO.VHHrf.MobileResults__DreamOutput-sc-s7ji7u-1.cbNGzl > div.DreamOutput__DreamOutputContainer-sc-q3wcit-3.kNyBTv > div > div > div:nth-child(1) > div > div > div > div.SelectableItem-sc-6c0djm-1.eYCbYI > img";
     const browser = await puppeteer.launch();
     try {
         const page = await browser.newPage();
         await page.goto("https://app.wombo.art");
-        await page.type(".TextInput__Input-sc-1qnfwgf-1", prompt);
+        await page.type(inputSelector, prompt);
         await page.click(`img[src='${arts[art]}']`);
-        await page.waitForSelector(".iMLenh");
-        await page.click(".iMLenh");
-        await page.waitForSelector(".gbeYse");
-        const src = await page.$eval("#blur-overlay > div > div > div > div.PaneContainers__PaneDisplayContainer-sc-9ic5sr-1.DreamOutput__PaneDisplayContainer-sc-q3wcit-0.jTkaiO.VHHrf.MobileResults__DreamOutput-sc-s7ji7u-1.cbNGzl > div.DreamOutput__DreamOutputContainer-sc-q3wcit-3.kNyBTv > div > div > div:nth-child(1) > div > div > div > div.SelectableItem-sc-6c0djm-1.eYCbYI > img", (e) => e.getAttribute("src"));
+        await page.waitForSelector(buttonSelector);
+        await page.click(buttonSelector);
+        await page.waitForSelector(outputSelector);
+        const src = await page.$eval(outputImageSelector, (e) => e.getAttribute("src"));
         if (!src) return Send.catch(message, error);
         Send.url(message, options, src, prompt);
     } catch (_) {

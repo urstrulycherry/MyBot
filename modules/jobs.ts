@@ -26,19 +26,25 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
 };
 
 const trigger = async (keyword: string, location: string) => {
+    const resultListSelector = ".jobs-search__results-list li";
     const browser = await puppeteer.launch();
     try {
         const page = await browser.newPage();
         await page.goto(`https://in.linkedin.com/jobs/search?keywords=${keyword}&location=${location}`);
-        let jobs = await page.$$eval(".jobs-search__results-list li", (list) => {
+        let jobs = await page.$$eval(resultListSelector, (list) => {
             return list.map((li) => {
                 try {
+                    const titleSelector = ".base-search-card__title";
+                    const companySelector = ".base-search-card__subtitle";
+                    const locationSelector = ".job-search-card__location";
+                    const dateSelector = "time";
+                    const linkSelector = ".base-card__full-link";
                     return {
-                        title: li.querySelector(".base-search-card__title")?.textContent?.trim().replace(/\n/g, ""),
-                        company: li.querySelector(".base-search-card__subtitle")?.textContent?.trim().replace(/\n/g, ""),
-                        location: li.querySelector(".job-search-card__location")?.textContent?.trim().replace(/\n/g, ""),
-                        date: li.querySelector("time")?.innerText?.trim().replace(/\n/g, ""),
-                        link: li.querySelector(".base-card__full-link")?.getAttribute("href")
+                        title: li.querySelector(titleSelector)?.textContent?.trim().replace(/\n/g, ""),
+                        company: li.querySelector(companySelector)?.textContent?.trim().replace(/\n/g, ""),
+                        location: li.querySelector(locationSelector)?.textContent?.trim().replace(/\n/g, ""),
+                        date: li.querySelector(dateSelector)?.innerText?.trim().replace(/\n/g, ""),
+                        link: li.querySelector(linkSelector)?.getAttribute("href")
                     };
                 } catch (e: unknown) {
                     console.log(e);

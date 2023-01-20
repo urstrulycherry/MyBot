@@ -2,15 +2,15 @@ import WAWebJS from "whatsapp-web.js";
 import puppeteer from "puppeteer";
 import { Send } from "../util/reply";
 
-const quotePath = '//*[@id="mf-qotd"]/div/div[2]/table/tbody/tr[1]/td/table/tbody/tr/td[3]/table/tbody/tr[1]/td';
-const authorPath = '//*[@id="mf-qotd"]/div/div[2]/table/tbody/tr[1]/td/table/tbody/tr/td[3]/table/tbody/tr[2]/td';
-
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     console.log("quote");
     trigger(message, options);
 };
 
 const trigger = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOptions) => {
+    const quotePath = '//*[@id="mf-qotd"]/div/div[2]/table/tbody/tr[1]/td/table/tbody/tr/td[3]/table/tbody/tr[1]/td';
+    const authorPath = '//*[@id="mf-qotd"]/div/div[2]/table/tbody/tr[1]/td/table/tbody/tr/td[3]/table/tbody/tr[2]/td';
+
     const error = "Something went wrong, please try again later";
     const browser = await puppeteer.launch();
     try {
