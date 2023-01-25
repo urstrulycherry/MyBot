@@ -42,9 +42,9 @@ const trigger = async (prompt: string, art: string, message: WAWebJS.Message, op
     const browser = await puppeteer.launch();
     try {
         const page = await browser.newPage();
-        await page.goto("https://app.wombo.art");
+        await page.goto("https://dream.ai/create");
         await page.type(inputSelector, prompt);
-        await page.click(`img[src='${arts[art]}']`);
+        if (art !== "Realistic") await page.click(`img[src='${arts[art]}']`);
         await page.waitForSelector(buttonSelector);
         await page.click(buttonSelector);
         await page.waitForSelector(outputSelector);
