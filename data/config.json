@@ -1,0 +1,149 @@
+{
+    "alive": {
+        "name": "alive",
+        "info": "Check if bot is alive",
+        "usage": "[prefix]alive",
+        "example": ".alive",
+        "available": "public"
+    },
+    "calc": {
+        "name": "calc",
+        "info": "Calculate math expression",
+        "usage": "[prefix]calc [expression]",
+        "example": ".calc 2+2",
+        "available": "public"
+    },
+    "cric": {
+        "name": "cric",
+        "info": "Get cricket score",
+        "usage": "[prefix]cric [team name(s)]",
+        "example": ".cric india vs pakistan",
+        "available": "public"
+    },
+    "curr": {
+        "name": "curr",
+        "info": "Get currency exchange rate",
+        "usage": "[prefix]curr [from] [to]",
+        "example": ".curr usd inr",
+        "available": "public"
+    },
+    "del": {
+        "name": "del",
+        "info": "Delete quoted message",
+        "usage": "[prefix]del [-s](optional)",
+        "example": ".del",
+        "available": "public"
+    },
+    "gm": {
+        "name": "gm",
+        "info": "Get media from quoted message",
+        "usage": "[prefix]gm",
+        "example": ".gm",
+        "available": "public"
+    },
+    "help": {
+        "name": "help",
+        "info": "Get a list of commands or info about a specific command",
+        "usage": "[prefix]help [command name](optional)",
+        "example": ".help alive",
+        "available": "public"
+    },
+    "img": {
+        "name": "img",
+        "info": "Get an AI generated image",
+        "usage": "[prefix]img [prompt] --[art style](optional)",
+        "example": ".img Feeling happy --Realistic",
+        "available": "public"
+    },
+    "jobs": {
+        "name": "jobs",
+        "info": "Get jobs from linkedin",
+        "usage": "[prefix]jobs --[keyword] --[location]",
+        "example": ".jobs --software engineer --Hyderabad",
+        "available": "public"
+    },
+    "joke": {
+        "name": "joke",
+        "info": "Get a random joke",
+        "usage": "[prefix]joke",
+        "example": ".joke",
+        "available": "public"
+    },
+    "manga": {
+        "name": "manga",
+        "info": "Search manga and get pdf",
+        "usage": "manga <manga name with chapter>",
+        "example": ".manga one piece chapter 1000",
+        "available": "none"
+    },
+    "md": {
+        "name": "md",
+        "info": "Download media from instagram, twitter, youtube and other sites(Experimental)",
+        "usage": "[prefix]md [urls(separated by space)]",
+        "example": ".md https://twitter.com/urstrulyMahesh/status/1523898728381227008",
+        "available": "public"
+    },
+    "meme": {
+        "name": "meme",
+        "info": "Get a random meme",
+        "usage": "[prefix]meme",
+        "example": ".meme",
+        "available": "public"
+    },
+    "quote": {
+        "name": "quote",
+        "info": "Get a random quote of the day",
+        "usage": "[prefix]quote",
+        "example": ".quote",
+        "available": "public"
+    },
+    "random": {
+        "name": "random",
+        "info": "Tag a random person in the group",
+        "usage": "[prefix]random",
+        "example": ".random",
+        "available": "public"
+    },
+    "s2m": {
+        "name": "s2m",
+        "info": "Convert sticker to media(animated experimental)",
+        "usage": "[prefix]s2m",
+        "example": ".s2m",
+        "available": "public"
+    },
+    "search": {
+        "name": "search",
+        "info": "Search for images on Google and send the first result",
+        "usage": "[prefix]search [search query]",
+        "example": ".search cats",
+        "available": "public"
+    },
+    "sticker": {
+        "name": "sticker",
+        "info": "Convert media to sticker",
+        "usage": "[prefix]sticker",
+        "example": ".sticker",
+        "available": "public"
+    },
+    "tagall": {
+        "name": "tagall",
+        "info": "Tag everyone in the group",
+        "usage": "[prefix]tagall",
+        "example": ".tagall",
+        "available": "public"
+    },
+    "update": {
+        "name": "update",
+        "info": "Update bot modules",
+        "usage": "[prefix]update [module name] [available options]",
+        "example": ".update alive none",
+        "available": "private"
+    },
+    "weather": {
+        "name": "weather",
+        "info": "Get weather info",
+        "usage": "[prefix]weather [location]",
+        "example": ".weather Hyderabad",
+        "available": "public"
+    }
+}
