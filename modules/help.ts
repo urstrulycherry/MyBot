@@ -9,7 +9,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
     let res: string;
     fromMe = message.fromMe;
     if (!body) {
-        res = "List of all modules:\n";
+        res = "Welcome to *MyBot*(https://github.com/urstrulycherry/MyBot)\n\nList of all modules:\n";
         res += getAllModulesInfo();
     } else {
         res = getModuleFullInfo(body);
