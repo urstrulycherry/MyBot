@@ -3,6 +3,8 @@ import qrcode from "qrcode-terminal";
 import { Helper } from "./util/helper";
 import { react } from "./util/reply";
 import { Modules } from "./util/modules";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const isTest = process.argv[2] === "test";
 const platform = process.platform;
