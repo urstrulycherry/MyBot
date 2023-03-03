@@ -17,7 +17,7 @@ const process = async (message: WAWebJS.Message, client: WAWebJS.Client, options
     }
     react.success(message);
     if (!message.body.includes("-s")) return;
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 1200));
     await trigger(message, client);
 }
 const trigger = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
