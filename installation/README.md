@@ -129,7 +129,6 @@
    ```
    tmux new -s MyBot
    npm start
-
    ```
 
    > To detach from the session, press `Ctrl + B` and then `D`.
