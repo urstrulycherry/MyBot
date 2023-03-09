@@ -4,45 +4,45 @@ import { Helper } from "./util/helper";
 import { react } from "./util/reply";
 import { Modules } from "./util/modules";
 import * as dotenv from "dotenv";
+import { EVENTS, LINUX, TEST_FLAG, UNSUPPORTED_PLATFORM, WINDOWS } from "./conf";
 dotenv.config();
 
-const isTest = process.argv[2] === "test";
+const isTest = process.argv[2] === TEST_FLAG;
 const platform = process.platform;
 
 const client: WAWebJS.Client =
-    platform === "win32"
+    platform === WINDOWS.PLATFORM
         ? new Client({
             authStrategy: new LocalAuth(),
             puppeteer: {
-                executablePath:
-                    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+                executablePath: WINDOWS.GOOGLE_CHROME_PATH
             }
         })
         : new Client({
             authStrategy: new LocalAuth(),
             puppeteer: {
-                executablePath: "/usr/bin/google-chrome-stable",
-                args: ["--no-sandbox"]
+                executablePath: LINUX.GOOGLE_CHROME_PATH,
+                args: LINUX.ARGS
             }
         });
 
 
-client.on("ready", async () => {
+client.on(EVENTS.READY, async () => {
     console.log(`${client.info.wid._serialized} is ready!`);
     Modules.setup();
     Modules.loadModules();
 });
 
-client.on("qr", (qr: string) => {
+client.on(EVENTS.QR, (qr: string) => {
     console.log("QR code:");
-    if (platform === "win32") {
+    if (platform === WINDOWS.PLATFORM) {
         qrcode.generate(qr, { small: true });
-    } else {
+    } else if (platform === LINUX.PLATFORM) {
         qrcode.generate(qr);
     }
 });
 
-client.on("message_create", async (message: WAWebJS.Message) => {
+client.on(EVENTS.MESSAGE_CREATE, async (message: WAWebJS.Message) => {
     if (message.isStatus) return;
     if (message.body === "" || !message.body) return;
     const firstWord = Helper.getCommandName(message.body, isTest);
@@ -59,10 +59,10 @@ client.on("message_create", async (message: WAWebJS.Message) => {
     Modules.commands.get(firstWord).process(message, client, options);
 });
 
-if (platform === "win32" || platform === "linux") {
+if (platform === WINDOWS.PLATFORM || platform === LINUX.PLATFORM) {
     client.initialize().catch((err: Error) => {
         console.log(err);
     });
 } else {
-    console.log("Unsupported platform");
+    console.log(UNSUPPORTED_PLATFORM);
 }
