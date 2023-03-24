@@ -1,6 +1,6 @@
 {
   "name": "mybot",
-  "version": "2.2.1",
+  "version": "2.3.1",
   "description": "It is an automated bot that performs numerous actions.",
   "main": "index.js",
   "type": "commonjs",
