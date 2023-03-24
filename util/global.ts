@@ -1,4 +1,8 @@
+import { TEST_FLAG } from "../conf";
+
 export const testPrefix = "test_";
+
+export const isTest = process.argv[2] === TEST_FLAG;
 
 export interface Config {
     [key: string]: {
@@ -8,6 +12,9 @@ export interface Config {
         example: string;
         available: string;
     }
+}
+export interface Settings {
+    [key: string]: string | string[]
 }
 
 export const Available = {
@@ -23,3 +30,10 @@ export const Executer = {
     TagNone: "."
 };
 
+export const Status = {
+    public: "public",
+    admin: "admin",
+    restricted: "restricted",
+    private: "private",
+    none: "none"
+};
