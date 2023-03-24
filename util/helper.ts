@@ -1,5 +1,7 @@
 import WAWebJS, { MessageSendOptions } from "whatsapp-web.js";
-import { Executer, testPrefix } from "./global";
+import { Executer, isTest, Status, testPrefix } from "./global";
+import { Send } from "./reply";
+import { SettingsManager } from "./settings";
 
 export class Helper {
     static readonly spliter = /\s+/g;
@@ -87,12 +89,12 @@ export class Helper {
         return options;
     };
 
-    static isAdmin = async (message: WAWebJS.Message, client: WAWebJS.Client, author = false) => {
+    static isAdmin = async (message: WAWebJS.Message, client: WAWebJS.Client) => {
         const chat = await message.getChat();
         if (!chat.isGroup) return false;
         const group: WAWebJS.GroupChat = chat as WAWebJS.GroupChat;
         let user: string | undefined;
-        if (!author || message.fromMe) {
+        if (message.fromMe) {
             user = client.info.wid._serialized;
         } else {
             user = message.author;
@@ -102,7 +104,7 @@ export class Helper {
         return participants.find((participant) => participant.id._serialized === user)?.isAdmin;
     };
 
-    static getCommandName = (body: string, isTest: boolean) => {
+    static getCommandName = (body: string) => {
         let command = body.split(this.spliter)[0];
         if (!command) return undefined;
         if (!command[0].match(/^[.!#$]/)) return undefined;
@@ -112,5 +114,63 @@ export class Helper {
             command = command.slice(testPrefix.length);
         }
         return command;
+    };
+
+    static checkStatus = async (message: WAWebJS.Message, client: WAWebJS.Client): Promise<boolean> => {
+        if (await this.checkSudo(message)) return false;
+
+        switch (SettingsManager.getBotStatus()) {
+            case Status.public:
+                return true;
+            case Status.admin:
+                return !!(await Helper.isAdmin(message, client)) || message.fromMe;
+            case Status.restricted:
+                return (await SettingsManager.isRestricted(message));
+            case Status.private:
+                return message.fromMe;
+            case Status.none:
+                return false;
+            default:
+                return false;
+        }
+    };
+
+    static checkSudo = async (message: WAWebJS.Message) => {
+        const body = message.body;
+        const words = body.split(this.spliter);
+        const prefix = isTest ? testPrefix : "";
+        const sudo = `#${prefix}sudo`;
+
+        if (words[0] !== sudo) return false;
+
+        if (words.length === 2) {
+            await this.execSudoCommand(message, words[1]);
+            return true;
+        } else if (words[1] === "add" && words.length === 3) {
+            await SettingsManager.addRestricted(words[2], message);
+            return true;
+        } else if (words[1] === "remove" && words.length === 3) {
+            await SettingsManager.removeRestricted(words[2], message);
+            return true;
+        }
+    };
+
+    static execSudoCommand = async (message: WAWebJS.Message, status: string) => {
+        if (!(await SettingsManager.isRestricted(message))) return;
+        if (SettingsManager.setBotStatus(status)) {
+            Send.text(message, {}, `Bot status set to ${status}`);
+            return;
+        }
+        Send.catch(message, `Error: Invalid status ${status}`);
+        return;
+    };
+
+
+    static getAuthor = async (message: WAWebJS.Message) => {
+        const chat = await message.getChat();
+        if (chat.isGroup) {
+            return message.author || "";
+        }
+        return message.from;
     };
 }

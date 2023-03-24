@@ -4,28 +4,34 @@ import { Helper } from "./util/helper";
 import { react } from "./util/reply";
 import { Modules } from "./util/modules";
 import * as dotenv from "dotenv";
-import { EVENTS, LINUX, TEST_FLAG, UNSUPPORTED_PLATFORM, WINDOWS } from "./conf";
+import { EVENTS, LINUX, UNSUPPORTED_PLATFORM, WINDOWS } from "./conf";
 dotenv.config();
 
-const isTest = process.argv[2] === TEST_FLAG;
 const platform = process.platform;
 
-const client: WAWebJS.Client =
-    platform === WINDOWS.PLATFORM
-        ? new Client({
+let client: WAWebJS.Client;
+
+switch (platform) {
+    case WINDOWS.PLATFORM:
+        client = new Client({
             authStrategy: new LocalAuth(),
             puppeteer: {
                 executablePath: WINDOWS.GOOGLE_CHROME_PATH
             }
-        })
-        : new Client({
+        });
+        break;
+    case LINUX.PLATFORM:
+        client = new Client({
             authStrategy: new LocalAuth(),
             puppeteer: {
                 executablePath: LINUX.GOOGLE_CHROME_PATH,
                 args: LINUX.ARGS
             }
         });
-
+        break;
+    default:
+        throw new Error(`${UNSUPPORTED_PLATFORM}: ${platform}`);
+}
 
 client.on(EVENTS.READY, async () => {
     console.log(`${client.info.wid._serialized} is ready!`);
@@ -45,7 +51,8 @@ client.on(EVENTS.QR, (qr: string) => {
 client.on(EVENTS.MESSAGE_CREATE, async (message: WAWebJS.Message) => {
     if (message.isStatus) return;
     if (message.body === "" || !message.body) return;
-    const firstWord = Helper.getCommandName(message.body, isTest);
+    if (!(await Helper.checkStatus(message, client))) return;
+    const firstWord = Helper.getCommandName(message.body);
     if (!firstWord) return;
     if (!Modules.isModuleAvailable(firstWord, message.fromMe)) {
         return;
@@ -64,5 +71,5 @@ if (platform === WINDOWS.PLATFORM || platform === LINUX.PLATFORM) {
         console.log(err);
     });
 } else {
-    console.log(UNSUPPORTED_PLATFORM);
+    throw new Error(`${UNSUPPORTED_PLATFORM}: ${platform}`);
 }
