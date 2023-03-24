@@ -55,20 +55,20 @@ export class Send {
             });
     };
 
-    static path = async (message: Message, options: WAWebJS.MessageSendOptions, mediaPath: string, text = "") => {
-        return Send.media(message, options, MessageMedia.fromFilePath(mediaPath), text)
+    static path = async (message: Message, options: WAWebJS.MessageSendOptions, mediaPath: string, caption = "") => {
+        return Send.media(message, options, MessageMedia.fromFilePath(mediaPath), caption)
             .finally(() => {
                 clearMedia(mediaPath);
             });
     };
 
-    static url = async (message: Message, options: WAWebJS.MessageSendOptions, mediaUrl: string, text = "") => {
+    static url = async (message: Message, options: WAWebJS.MessageSendOptions, mediaUrl: string, caption = "") => {
         return MessageMedia.fromUrl(mediaUrl, { unsafeMime: true })
             .then((media: MessageMedia) => {
                 if (media.mimetype.includes("text/html")) {
                     return Send.catch(message, "Invalid media url");
                 }
-                return Send.media(message, options, media, text);
+                return Send.media(message, options, media, caption);
             }).catch((e) => {
                 Send.error(message, e);
             });
@@ -83,12 +83,12 @@ export class Send {
             });
     };
 
-    static media = async (message: Message, options: WAWebJS.MessageSendOptions, media: MessageMedia, text = "") => {
+    static media = async (message: Message, options: WAWebJS.MessageSendOptions, media: MessageMedia, caption = "") => {
         const mediaSize = media.data.length * 3 / 4 / 1024 / 1024;
         if (mediaSize > Send.fileLimit) {
             Send.document(message, options, media);
         } else {
-            options.caption = text;
+            options.caption = caption;
             return message.reply(media, undefined, options)
                 .then((replyMsg: Message) => {
                     react.success(message);
@@ -101,8 +101,9 @@ export class Send {
         }
     };
 
-    static document = async (message: Message, options: WAWebJS.MessageSendOptions, media: MessageMedia) => {
+    static document = async (message: Message, options: WAWebJS.MessageSendOptions, media: MessageMedia, caption = "") => {
         options.sendMediaAsDocument = true;
+        options.caption = caption;
         return message.reply(media, undefined, options)
             .then((replyMsg: Message) => {
                 react.success(message);
