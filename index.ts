@@ -1,7 +1,7 @@
 import WAWebJS, { Client, LocalAuth, MessageSendOptions } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import { Helper } from "./util/helper";
-import { react } from "./util/reply";
+import { React } from "./util/reply";
 import { Modules } from "./util/modules";
 import * as dotenv from "dotenv";
 import { EVENTS, LINUX, UNSUPPORTED_PLATFORM, WINDOWS } from "./conf";
@@ -57,7 +57,7 @@ client.on(EVENTS.MESSAGE_CREATE, async (message: WAWebJS.Message) => {
     if (!Modules.isModuleAvailable(firstWord, message.fromMe)) {
         return;
     }
-    await react.proccessing(message);
+    await React.proccessing(message);
     const chat = await message.getChat();
     let options: MessageSendOptions = {};
     if (chat.isGroup) {

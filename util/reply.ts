@@ -12,12 +12,12 @@ export class Send {
         return message.reply(`${formatter}${text}${formatter}`, undefined, options)
             .then((replyMsg: Message) => {
                 if (needReact) {
-                    react.success(message);
+                    React.success(message);
                 }
                 return replyMsg;
             })
             .catch((e) => {
-                react.error(message);
+                React.error(message);
                 Send.error(message, e);
             });
     };
@@ -26,12 +26,12 @@ export class Send {
         return message.reply(text, undefined, options)
             .then((replyMsg: Message) => {
                 if (needReact) {
-                    react.success(message);
+                    React.success(message);
                 }
                 return replyMsg;
             })
             .catch((e) => {
-                react.error(message);
+                React.error(message);
                 Send.error(message, e);
             });
     };
@@ -43,11 +43,11 @@ export class Send {
         options.sendMediaAsSticker = true;
         return message.reply(MessageMedia.fromFilePath(filename), undefined, options)
             .then((replyMsg: Message) => {
-                react.success(message);
+                React.success(message);
                 return replyMsg;
             })
             .catch((e) => {
-                react.error(message);
+                React.error(message);
                 Send.error(message, e);
             })
             .finally(() => {
@@ -76,7 +76,7 @@ export class Send {
 
     static error = async (message: Message, error: Error) => {
         const to = message.fromMe ? message.from : message.to;
-        react.error(message);
+        React.error(message);
         return message.reply(`*From:* ${message.from}\n*To:* ${message.to}\n\n*Error:* ${error}`, to)
             .catch(() => {
                 console.log("Error sending error message");
@@ -91,11 +91,11 @@ export class Send {
             options.caption = caption;
             return message.reply(media, undefined, options)
                 .then((replyMsg: Message) => {
-                    react.success(message);
+                    React.success(message);
                     return replyMsg;
                 })
                 .catch((e) => {
-                    react.error(message);
+                    React.error(message);
                     Send.error(message, e);
                 });
         }
@@ -106,11 +106,11 @@ export class Send {
         options.caption = caption;
         return message.reply(media, undefined, options)
             .then((replyMsg: Message) => {
-                react.success(message);
+                React.success(message);
                 return replyMsg;
             })
             .catch((e) => {
-                react.error(message);
+                React.error(message);
                 Send.error(message, e);
             });
     };
@@ -134,13 +134,13 @@ export class Send {
     };
 
     static catch = async (message: Message, text = "") => {
-        react.warning(message);
+        React.warning(message);
         if (!text || text === "") return;
         return message.reply(`_${text}_`);
     };
 }
 
-export class react {
+export class React {
     static proccessing = async (message: Message) => {
         return message.react("🔄").catch(() => {
             return;
