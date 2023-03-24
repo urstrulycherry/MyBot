@@ -5,7 +5,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
     console.log("get media");
     const noMedia = "No media found";
     if (!message.hasQuotedMsg) return Send.catch(message);
-
+    const messageCaption = message.body.split(" ").slice(1).join(" ");
     const chat = await message.getChat();
     await chat.fetchMessages({ limit: 500 });
     const quotedMsg = await message.getQuotedMessage().catch(() => {
@@ -23,7 +23,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
         if (!media) {
             return Send.catch(message);
         }
-        Send.media(message, options, media, quotedMsg.body);
+        Send.media(message, options, media, messageCaption || quotedMsg.body);
     } else {
         if (!quotedMsg.body) {
             return Send.catch(message, noMedia);
