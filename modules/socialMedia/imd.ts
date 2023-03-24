@@ -12,8 +12,8 @@ export const imd = async (message: WAWebJS.Message, options: WAWebJS.MessageSend
     instagramGetUrl(url).then((res: igRes) => {
         if (res.results_number > 0) {
             res.url_list.forEach((mediaUrl: string) => {
-                if (mediaUrl.includes("https://media.cl-converter.com")) {
-                    mediaUrl = decodeURIComponent(mediaUrl).split("uri=")[1].split(" ")[0];
+                if (mediaUrl.includes("https://media.instasupersave.com")) {
+                    mediaUrl = decodeURIComponent(mediaUrl).split("uri=")[1].split("&filename=")[0];
                 }
                 Send.url(message, options, mediaUrl);
             });
