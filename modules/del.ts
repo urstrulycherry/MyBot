@@ -1,7 +1,7 @@
 /* eslint-disable */
 import WAWebJS from "whatsapp-web.js";
 import { Helper } from "../util/helper";
-import { React, Send } from "../util/reply";
+import { React } from "../util/reply";
 
 const process = async (message: WAWebJS.Message, client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     console.log("delete");
