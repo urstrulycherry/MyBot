@@ -6,7 +6,7 @@
 
 ## Description
 
-This is an automated WhatsApp bot which performs tasks like downloading media from other social media platforms(Twitter, Instagram, and YouTube), generating stickers, downloading manga comics, performing calculations, live cricket scores, job searches, weather updates, and many more.
+This is an automated WhatsApp bot which performs tasks like downloading media from other social media platforms(Twitter, Instagram, and YouTube), generating stickers, performing calculations, live cricket scores, job searches, weather updates, and many more.
 
 > <br/>This project is purely written in TypeScript.
 > <br/><br/>
