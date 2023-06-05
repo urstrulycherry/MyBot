@@ -4,15 +4,18 @@ import puppeteer from "puppeteer";
 import { Helper } from "../util/helper";
 
 const arts: { [key: string]: string; } = {
-    Arcane: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/arcane.jpeg",
-    Realistic: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/realistic.jpeg",
+    Arcane: "	https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/arcane.jpeg",
+    Realistic: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/realistic_v2.jpg",
     Expressionism: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/expressionism.png",
     Figure: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/figure.jpeg",
     HDR: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/hdr.png",
-    Spectral: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/spectral.jpeg",
+    Spectral: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/spectralv2.jpg",
     Comic: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/comic.png",
     SoftTouch: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/softtouch.png",
-    Meme: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/meme.jpg"
+    BuliojourneyV2: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/buliojourney_v2.jpg",
+    HD: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/hd.jpg",
+    Anime: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/anime.png",
+    Ink: "https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/ink.png"
 };
 
 const error = "Something went wrong, please try again later";
@@ -37,20 +40,25 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
 const trigger = async (prompt: string, art: string, message: WAWebJS.Message, options: WAWebJS.MessageSendOptions) => {
     const inputSelector = ".TextInput__Input-sc-1qnfwgf-1";
     const buttonSelector = ".iMLenh";
+    const closeButtonSelector = ".FkQre";
     const outputSelector = ".gbeYse";
-    const outputImageSelector = "#blur-overlay > div > div > div > div.PaneContainers__PaneDisplayContainer-sc-9ic5sr-1.DreamOutput__PaneDisplayContainer-sc-q3wcit-0.jTkaiO.VHHrf.MobileResults__DreamOutput-sc-s7ji7u-1.cbNGzl > div.DreamOutput__DreamOutputContainer-sc-q3wcit-3.kNyBTv > div > div > div:nth-child(1) > div > div > div > div.SelectableItem-sc-6c0djm-1.eYCbYI > img";
     const browser = await puppeteer.launch();
     try {
         const page = await browser.newPage();
         await page.goto("https://dream.ai/create");
+        // wait for 3 seconds
+        await new Promise((resolve) => setTimeout(resolve, 3000));
         await page.type(inputSelector, prompt);
-        if (art !== "Realistic") await page.click(`img[src='${arts[art]}']`);
+        if (art !== "BuliojourneyV2") await page.click(`img[src='${arts[art]}']`);
         await page.waitForSelector(buttonSelector);
         await page.click(buttonSelector);
+        await page.waitForSelector(closeButtonSelector);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await page.click(closeButtonSelector);
         await page.waitForSelector(outputSelector);
-        const src = await page.$eval(outputImageSelector, (e) => e.getAttribute("src"));
+        const src = await page.$eval(outputSelector, (e) => e.getAttribute("src"));
         if (!src) return Send.catch(message, error);
-        Send.url(message, options, src, prompt);
+        await Send.url(message, options, src);
     } catch (_) {
         Send.catch(message, error);
     } finally {
