@@ -18,7 +18,6 @@ export const yt = async (message: WAWebJS.Message, options: WAWebJS.MessageSendO
         }
         const response = await axios.get(`https://is.gd/create.php?format=json&url=${encodeURIComponent(videoUrl)}`);
         const shortUrl = response.data.shorturl;
-        // simple message and add download link
         const msg = `*Title:* ${info.videoDetails.title}
 
 *Duration:* ${info.videoDetails.lengthSeconds} seconds
