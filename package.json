@@ -1,6 +1,6 @@
 {
   "name": "mybot",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "It is an automated bot that performs numerous actions.",
   "main": "index.js",
   "type": "commonjs",
@@ -24,23 +24,24 @@
   "license": "ISC",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
-    "@types/pdfkit": "^0.12.9",
+    "@types/pdfkit": "^0.12.10",
     "@types/qrcode-terminal": "^0.12.0",
-    "axios": "^1.3.5",
-    "dotenv": "^16.0.3",
-    "instagram-url-direct": "^1.0.13",
+    "axios": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.3.1",
+    "got": "^11.8.3",
     "is-animated": "^2.0.2",
-    "mathjs": "^11.8.0",
+    "mathjs": "^11.8.2",
     "pdfkit": "^0.13.0",
-    "puppeteer": "^19.8.5",
+    "puppeteer": "^20.7.3",
     "qrcode-terminal": "^0.12.0",
     "twitter-url": "^1.1.3",
-    "whatsapp-web.js": "^1.19.5",
-    "ytdl-core": "^4.11.3"
+    "whatsapp-web.js": "^1.21.0",
+    "ytdl-core": "^4.11.4"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.57.1",
-    "@typescript-eslint/parser": "^5.57.1",
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/parser": "^5.60.0",
     "ts-node": "^10.9.1"
   }
 }
