@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import WAWebJS from "whatsapp-web.js";
 import { parse } from "url";
 import { Send } from "../../util/reply";
