@@ -77,6 +77,7 @@ const getTweetInfo = (tweetUrl: string) => {
                     tweet.extended_entities.media.forEach((media: any) => {
                         if (media.video_info) {
                             const highestBitrateUrl = media.video_info.variants.reduce((prev: any, variant: any) => {
+                                if (!prev.bitrate) return variant;
                                 return (variant.content_type === "video/mp4" && variant.bitrate > prev.bitrate) ? variant : prev;
                             });
                             urls.push(highestBitrateUrl.url);
