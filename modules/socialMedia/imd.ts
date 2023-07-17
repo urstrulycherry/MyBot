@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import WAWebJS from "whatsapp-web.js";
 import { Send } from "../../util/reply";
 import { instaSave } from "./imd_helper";
