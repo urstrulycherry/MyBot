@@ -29,7 +29,7 @@ export class Helper {
 
     static getMsgFromBody = async (message: WAWebJS.Message) => {
         try {
-            if (message.body.split(this.spliter).length > 1) {
+            if (message.body.trim().split(this.spliter).length > 1) {
                 return message.body.split(this.spliter).slice(1).join(" ");
             } else if (message.hasQuotedMsg) {
                 const chat = await message.getChat();
@@ -41,6 +41,24 @@ export class Helper {
             return undefined;
         }
     };
+
+    static getFormattedMsgFromBody = async (message: WAWebJS.Message) => {
+        try {
+            if (message.body.trim().split(this.spliter).length > 1) {
+                const firstWord = message.body.split(this.spliter)[0];
+                const text = message.body.substring(firstWord.length).trim();
+                return text;
+            } else if (message.hasQuotedMsg) {
+                const chat = await message.getChat();
+                await chat.fetchMessages({ limit: 500 });
+                const quotedMsg = await message.getQuotedMessage();
+                return quotedMsg.body;
+            }
+        } catch (error) {
+            return undefined;
+        }
+    };
+
 
     static getAdmins = async (message: WAWebJS.Message, client: WAWebJS.Client, groupChat: WAWebJS.GroupChat) => {
         const participants: WAWebJS.Contact[] = [];
