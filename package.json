@@ -31,9 +31,9 @@
     "dotenv": "^16.3.1",
     "got": "^11.8.3",
     "is-animated": "^2.0.2",
-    "mathjs": "^11.8.2",
+    "mathjs": "^11.10.0",
     "pdfkit": "^0.13.0",
-    "puppeteer": "^21.0.2",
+    "puppeteer": "^21.1.0",
     "qrcode-terminal": "^0.12.0",
     "twitter": "^1.7.1",
     "whatsapp-web.js": "^1.22.1",
@@ -41,8 +41,8 @@
   },
   "devDependencies": {
     "@types/twitter": "^1.7.1",
-    "@typescript-eslint/eslint-plugin": "^6.3.0",
-    "@typescript-eslint/parser": "^6.3.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
     "ts-node": "^10.9.1"
   }
 }
