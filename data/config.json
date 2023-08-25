@@ -22,9 +22,9 @@
     },
     "curr": {
         "name": "curr",
-        "info": "Get currency exchange rate",
-        "usage": "[prefix]curr [from] [to]",
-        "example": ".curr usd inr",
+        "info": "Get currency exchange rate. Amount is optional and defaults to 1. -from and -to are optional and default to USD and INR respectively",
+        "usage": "[prefix]curr [amount] [-from] [-to]",
+        "example": ".curr 100 usd inr",
         "available": "public"
     },
     "del": {

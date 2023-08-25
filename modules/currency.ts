@@ -3,30 +3,27 @@ import { Helper } from "../util/helper";
 import { Send } from "../util/reply";
 
 const incorrect = "Incorrect currency code";
+const error = "Something went wrong, please try again later";
+
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     console.log("economy");
-    const error = "Something went wrong, please try again later";
+
     try {
-        const msg = await Helper.getMsgFromBody(message);
-        if (!msg) return Send.catch(message);
-        const arr = msg.split(" ").filter((item) => item.trim());
-        const [cur1, cur2] = arr;
-        if (!cur1) {
-            return Send.catch(message, "Please provide currency code(s)");
+        const msg = message.body.split(Helper.spliter).slice(1).join(" ");
+        const [amount, from, to] = getAmountAndCurrencies(msg);
+        const result = await trigger(amount, from, to);
+        if (result) {
+            Send.text(message, options, result);
+        } else {
+            Send.catch(message, incorrect);
         }
-        const res = (!cur2) ? await trigger(cur1, undefined) : await trigger(cur1, cur2);
-        if (!res) {
-            return Send.catch(message, incorrect);
-        }
-        Send.text(message, options, res);
     } catch (_) {
         Send.catch(message, error);
     }
 };
 
-const trigger = async (cur1: string, cur2: string | undefined) => {
-    const url = cur2 ? `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${cur1}/${cur2}.json`.toLowerCase()
-        : `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/inr/${cur1}.json`.toLowerCase();
+const trigger = async (amount: string, cur1: string, cur2: string) => {
+    const url = `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${cur1}/${cur2}.json`.toLowerCase();
     const res = await fetch(url).then((_res) => {
         return _res.json();
     }).then((data) => {
@@ -37,9 +34,21 @@ const trigger = async (cur1: string, cur2: string | undefined) => {
 
     if (!res) return;
 
-    const msg = cur2 ? `Date: ${res.date}\n1 ${cur1.toUpperCase()} = ${res[cur2.toLowerCase()]} ${cur2.toUpperCase()}`
-        : `Date: ${res.date}\n1 INR = ${res[cur1.toLowerCase()]} ${cur1.toUpperCase()}`;
+    let msg = `Date: ${res.date}\n1 ${cur1.toUpperCase()} = ${res[cur2.toLowerCase()]} ${cur2.toUpperCase()}`;
+    if (amount !== "1") msg += `\n${amount} ${cur1.toUpperCase()} = ${res[cur2.toLowerCase()] * +amount} ${cur2.toUpperCase()}`;
+
     return msg;
+};
+
+const getAmountAndCurrencies = (text: string): (string)[] => {
+    const words = text.trim().split(/\s+/g);
+    let to = (words[words.length - 1] && words[words.length - 1].match(/-\w+/g)) ? words.pop()?.replaceAll("-", "").toLowerCase() : "inr";
+    let from = (words[words.length - 1] && words[words.length - 1].match(/-\w+/g)) ? words.pop()?.replaceAll("-", "").toLowerCase() : "usd";
+    let amount = isNaN(+words[words.length - 1]) ? "1" : words.pop();
+    if (!to) to = "inr";
+    if (!from) from = "usd";
+    if (!amount) amount = "1";
+    return [amount, from, to];
 };
 
 module.exports = {
