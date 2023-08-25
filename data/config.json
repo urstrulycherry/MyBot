@@ -58,8 +58,8 @@
     "jobs": {
         "name": "jobs",
         "info": "Get jobs from linkedin",
-        "usage": "[prefix]jobs --[keyword] --[location]",
-        "example": ".jobs --software engineer --Hyderabad",
+        "usage": "[prefix]jobs -[keyword] -[location]",
+        "example": ".jobs -software engineer -Hyderabad",
         "available": "public"
     },
     "joke": {

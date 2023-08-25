@@ -9,7 +9,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
         console.log("Processing jobs");
         const msg = await Helper.getMsgFromBody(message);
         if (!msg) return Send.catch(message);
-        const arr = msg.split("--").filter((item) => item.trim());
+        const arr = msg.split("-").filter((item) => item.trim());
         const [keyword, location] = arr;
 
         if (!keyword || !location) {
