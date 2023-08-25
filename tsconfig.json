@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
         "lib": [
-            "DOM"
+            "DOM",
+            "ES2023"
         ],
         "module": "commonjs",
         "esModuleInterop": true,
