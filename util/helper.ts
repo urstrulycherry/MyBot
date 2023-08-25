@@ -5,6 +5,7 @@ import { SettingsManager } from "./settings";
 
 export class Helper {
     static readonly spliter = /\s+/g;
+    static readonly hypenRegex = /-\w+/g;
 
     static readonly isValidHttpUrl = (u: string) => {
         let url: URL;
