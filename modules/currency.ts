@@ -34,8 +34,8 @@ const trigger = async (amount: string, cur1: string, cur2: string) => {
 
     if (!res) return;
 
-    let msg = `Date: ${res.date}\n1 ${cur1.toUpperCase()} = ${res[cur2.toLowerCase()]} ${cur2.toUpperCase()}`;
-    if (amount !== "1") msg += `\n${amount} ${cur1.toUpperCase()} = ${res[cur2.toLowerCase()] * +amount} ${cur2.toUpperCase()}`;
+    let msg = `Date: ${res.date}\n1 ${cur1.toUpperCase()} = ${res[cur2]} ${cur2.toUpperCase()}`;
+    if (amount !== "1") msg += `\n${amount} ${cur1.toUpperCase()} = ${(res[cur2] * +amount).toFixed(2)} ${cur2.toUpperCase()}`;
 
     return msg;
 };
