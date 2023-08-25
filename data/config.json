@@ -51,8 +51,8 @@
     "img": {
         "name": "img",
         "info": "Get an AI generated image",
-        "usage": "[prefix]img [prompt] --[art style](optional)",
-        "example": ".img Feeling happy --Realistic",
+        "usage": "[prefix]img [prompt] -[art style](optional)",
+        "example": ".img Feeling happy -Realistic",
         "available": "public"
     },
     "jobs": {

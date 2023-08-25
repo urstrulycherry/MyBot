@@ -25,7 +25,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
         const msg = await Helper.getMsgFromBody(message);
         if (!msg) return Send.catch(message);
         // eslint-disable-next-line prefer-const
-        let [prompt, art] = msg.split(" --");
+        let [prompt, art] = msg.split(" -");
         if (!art) art = "Realistic";
         if (!Object.keys(arts).includes(art)) art = "Realistic";
         if (!prompt || !art) return Send.catch(message);
