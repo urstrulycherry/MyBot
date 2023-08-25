@@ -135,8 +135,8 @@
     "tr": {
         "name": "tr",
         "info": "Translate text",
-        "usage": "[prefix]tr text [--from|auto] [--to|en]",
-        "example": ".tr hi hello --te",
+        "usage": "[prefix]tr text [-from|auto] [-to|en]",
+        "example": ".tr hi hello -te",
         "available": "public"
     },
     "update": {

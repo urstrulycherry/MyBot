@@ -22,15 +22,15 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
 };
 
 const translate = async (message: WAWebJS.Message, text: string, from?: string, to?: string): Promise<string | undefined> => {
-    text = text.replace(/--\w+/g, "").trim();
+    text = text.replace(Helper.hypenRegex, "").trim();
     if (!text) return;
     if (!from) {
-        from = "--auto";
+        from = "-auto";
     }
     if (!to) {
-        to = "--en";
+        to = "-en";
     }
-    const url = `https://translate.google.com/?hl=en&sl=${from.substring(2)}&tl=${to.substring(2)}&text=${encodeURIComponent(text)}&op=translate`;
+    const url = `https://translate.google.com/?hl=en&sl=${from.substring(1)}&tl=${to.substring(1)}&text=${encodeURIComponent(text)}&op=translate`;
     let result = "";
     try {
         const browser = await puppeteer.launch();
@@ -49,8 +49,7 @@ const translate = async (message: WAWebJS.Message, text: string, from?: string, 
 };
 
 const getFromAndTo = (text: string): (string | undefined)[] => {
-    const regex = /--\w+/g;
-    const matches = text.match(regex);
+    const matches = text.match(Helper.hypenRegex);
 
     if (matches && matches.length >= 2) {
         return matches.slice(-2);
