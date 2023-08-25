@@ -17,7 +17,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
 
 const trigger = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOptions, search: string) => {
     const firstImgSelector = "#islrg > div.islrc > div:nth-child(2) > a.wXeWr.islib.nfEiy";
-    const imgSelector = "#Sva75c > div.DyeYj > div > div.dFMRD > div.pxAole > div.tvh9oe.BIB1wf > c-wiz > div.nIWXKc.JgfpDb > div.OUZ5W > div.zjoqD > div.qdnLaf.isv-id.b0vFpe > div > a > img";
+    const imgSelector = "#Sva75c > div.A8mJGd.NDuZHe > div.dFMRD > div.pxAole > div.tvh9oe.BIB1wf > c-wiz > div > div > div > div.n4hgof > div.MAtCL.PUxBg > a > img.r48jcc.pT0Scc.iPVvYb";
 
     const browser = await puppeteer.launch();
     try {
@@ -26,7 +26,7 @@ const trigger = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOpt
         await page.waitForSelector(firstImgSelector, { timeout: 5000 });
         await page.click(firstImgSelector);
         await page.waitForSelector(imgSelector);
-        await new Promise(r => setTimeout(r, 5000));
+        await new Promise(r => setTimeout(r, 3000));
         const src = await page.$eval(imgSelector, (img) => img.getAttribute("src"));
         if (!src) return Send.catch(message);
         await browser.close();
