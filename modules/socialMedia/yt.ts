@@ -13,7 +13,7 @@ export const yt = async (message: WAWebJS.Message, options: WAWebJS.MessageSendO
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const video = formats.filter((f) => f.hasVideo).sort((a, b) => b.width! - a.width!)[0];
         const videoUrl = video.url;
-        if (duration < 70) {
+        if (duration < 80) {
             return Send.url(message, options, videoUrl, info.videoDetails.title);
         }
         const response = await axios.get(`https://is.gd/create.php?format=json&url=${encodeURIComponent(videoUrl)}`);
