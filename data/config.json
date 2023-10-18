@@ -90,6 +90,13 @@
         "example": ".meme",
         "available": "public"
     },
+    "q": {
+        "name": "q",
+        "info": "Get response from AI",
+        "usage": "[prefix]q",
+        "example": ".q [your custom question/message]",
+        "available": "public"
+    },
     "quote": {
         "name": "quote",
         "info": "Get a random quote of the day",
