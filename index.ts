@@ -41,11 +41,7 @@ client.on(EVENTS.READY, async () => {
 
 client.on(EVENTS.QR, (qr: string) => {
     console.log("QR code:");
-    if (platform === WINDOWS.PLATFORM) {
-        qrcode.generate(qr, { small: true });
-    } else if (platform === LINUX.PLATFORM) {
-        qrcode.generate(qr);
-    }
+    qrcode.generate(qr, { small: true });
 });
 
 client.on(EVENTS.MESSAGE_CREATE, async (message: WAWebJS.Message) => {
