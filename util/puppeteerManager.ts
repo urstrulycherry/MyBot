@@ -4,7 +4,7 @@ let browser: Browser | null = null;
 
 async function initializeBrowser() {
     browser = await puppeteer.launch({
-        headless: false,
+        headless: "new",
         args: [
             "--no-sandbox"
         ]
