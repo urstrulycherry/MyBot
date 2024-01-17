@@ -1,14 +1,10 @@
 import puppeteer, { Browser, Page } from "puppeteer";
+import { PUPPETEER_ARGS } from "../conf";
 
 let browser: Browser | null = null;
 
 async function initializeBrowser() {
-    browser = await puppeteer.launch({
-        headless: "new",
-        args: [
-            "--no-sandbox"
-        ]
-    });
+    browser = await puppeteer.launch(PUPPETEER_ARGS);
 }
 
 export async function newPage(): Promise<Page> {
