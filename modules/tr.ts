@@ -1,7 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
 import { Send } from "../util/reply";
-import puppeteer from "puppeteer";
 import { Helper } from "../util/helper";
+import { newPage } from "../util/puppeteerManager";
 
 const error = "Something went wrong, please try again later";
 const invalid = "Please provide a valid text to translate";
@@ -33,8 +33,7 @@ const translate = async (message: WAWebJS.Message, text: string, from?: string, 
     const url = `https://translate.google.com/?hl=en&sl=${from.substring(1)}&tl=${to.substring(1)}&text=${encodeURIComponent(text)}&op=translate`;
     let result = "";
     try {
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
+        const page = await newPage();
         await page.goto(url);
         await page.waitForSelector(".ryNqvb");
         const elements = await page.$$(".ryNqvb");
@@ -42,6 +41,7 @@ const translate = async (message: WAWebJS.Message, text: string, from?: string, 
             const res = await page.evaluate(ele => ele.textContent, element);
             result += res;
         }
+        await page.close();
     } catch (err) {
         return;
     }

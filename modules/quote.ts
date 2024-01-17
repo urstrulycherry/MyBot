@@ -1,6 +1,6 @@
 import WAWebJS from "whatsapp-web.js";
-import puppeteer from "puppeteer";
 import { Send } from "../util/reply";
+import { newPage } from "../util/puppeteerManager";
 
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     console.log("quote");
@@ -12,9 +12,8 @@ const trigger = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOpt
     const authorPath = '//*[@id="mf-qotd"]/div/div[2]/table/tbody/tr[1]/td/table/tbody/tr/td[3]/table/tbody/tr[2]/td';
 
     const error = "Something went wrong, please try again later";
-    const browser = await puppeteer.launch();
     try {
-        const page = await browser.newPage();
+        const page = await newPage();
         await page.goto("https://en.wikiquote.org/wiki/Main_Page");
         await page.waitForXPath(quotePath);
         const [element1] = await page.$x(quotePath);
@@ -24,12 +23,10 @@ const trigger = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOpt
         const emoji1 = "😊❤️️🌞";
         const emoji2 = "☀️☕➡️️😋";
         const result = `*${new Date().toDateString()}* ${emoji1}\n${quoteText?.trim()}\n_${authorName?.substring(1, authorName.length - 2).trim()}_\n_Have a Good Day!_ ${emoji2}`;
-        browser.close();
+        await page.close();
         Send.text(message, options, result);
     } catch (_) {
         Send.catch(message, error);
-    } finally {
-        await browser.close();
     }
 };
 

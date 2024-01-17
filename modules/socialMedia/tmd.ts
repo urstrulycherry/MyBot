@@ -1,7 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
 import { Send } from "../../util/reply";
 import * as dotenv from "dotenv";
-import puppeteer from "puppeteer";
+import { newPage } from "../../util/puppeteerManager";
 
 dotenv.config();
 
@@ -12,8 +12,7 @@ export const tmd = async (message: WAWebJS.Message, options: WAWebJS.MessageSend
     try {
         const username = new URL(url).pathname.split("/")[1];
         const tweetId = new URL(url).pathname.split("/")[3];
-        const browser = await puppeteer.launch({ headless: "new" });
-        const page = await browser.newPage();
+        const page = await newPage();
         await page.goto(url);
         await page.waitForSelector("img", { visible: true });
         const imageNodes = await page.$x(`//a[contains(@href, "/${username}/status/${tweetId}/photo/")]`);
@@ -24,7 +23,7 @@ export const tmd = async (message: WAWebJS.Message, options: WAWebJS.MessageSend
                 return `${imageUrl?.split("?")[0]}?format=jpg&name=4096x4096`;
             })
         );
-        await browser.close();
+        await page.close();
         if (imageUrls.length > 0) {
             imageUrls.forEach((imageUrl) => {
                 Send.url(message, options, imageUrl);

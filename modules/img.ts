@@ -1,7 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
 import { Send } from "../util/reply";
-import puppeteer from "puppeteer";
 import { Helper } from "../util/helper";
+import { newPage } from "../util/puppeteerManager";
 
 const arts: { [key: string]: string; } = {
     Arcane: "	https://d3j730xi5ph1dq.cloudfront.net/dream/style_thumbnail/arcane.jpeg",
@@ -42,9 +42,8 @@ const trigger = async (prompt: string, art: string, message: WAWebJS.Message, op
     const buttonSelector = ".iMLenh";
     const closeButtonSelector = ".FkQre";
     const outputSelector = ".gbeYse";
-    const browser = await puppeteer.launch();
     try {
-        const page = await browser.newPage();
+        const page = await newPage();
         await page.goto("https://dream.ai/create");
         // wait for 3 seconds
         await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -57,12 +56,11 @@ const trigger = async (prompt: string, art: string, message: WAWebJS.Message, op
         await page.click(closeButtonSelector);
         await page.waitForSelector(outputSelector);
         const src = await page.$eval(outputSelector, (e) => e.getAttribute("src"));
+        await page.close();
         if (!src) return Send.catch(message, error);
         await Send.url(message, options, src);
     } catch (_) {
         Send.catch(message, error);
-    } finally {
-        await browser.close();
     }
 };
 

@@ -1,7 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
 import { Send } from "../util/reply";
-import puppeteer from "puppeteer";
 import { Helper } from "../util/helper";
+import { newPage } from "../util/puppeteerManager";
 
 const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, options: WAWebJS.MessageSendOptions) => {
     const error = "Something went wrong, please try again later";
@@ -27,9 +27,8 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
 
 const trigger = async (keyword: string, location: string) => {
     const resultListSelector = ".jobs-search__results-list li";
-    const browser = await puppeteer.launch();
     try {
-        const page = await browser.newPage();
+        const page = await newPage();
         await page.goto(`https://in.linkedin.com/jobs/search?keywords=${keyword}&location=${location}`);
         let jobs = await page.$$eval(resultListSelector, (list) => {
             return list.map((li) => {
@@ -51,7 +50,7 @@ const trigger = async (keyword: string, location: string) => {
                 }
             });
         });
-        await browser.close();
+        await page.close();
         jobs = jobs.slice(0, 10);
         const text = jobs.map((job) => {
             return `✉️ ${job?.title}
@@ -64,8 +63,6 @@ const trigger = async (keyword: string, location: string) => {
         return text;
     } catch (_) {
         return "";
-    } finally {
-        await browser.close();
     }
 };
 
