@@ -8,23 +8,23 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
 };
 
 const trigger = async (message: WAWebJS.Message, options: WAWebJS.MessageSendOptions) => {
-    const quotePath = '//*[@id="mf-qotd"]/div/div[2]/table/tbody/tr[1]/td/table/tbody/tr/td[3]/table/tbody/tr[1]/td';
-    const authorPath = '//*[@id="mf-qotd"]/div/div[2]/table/tbody/tr[1]/td/table/tbody/tr/td[3]/table/tbody/tr[2]/td';
+    const quotePath = "#mf-qotd > div > div:nth-child(2) > table > tbody > tr:nth-child(1) > td > table > tbody > tr > td:nth-child(3) > table > tbody > tr:nth-child(1) > td";
+    const authorPath = "#mf-qotd > div > div:nth-child(2) > table > tbody > tr:nth-child(1) > td > table > tbody > tr > td:nth-child(3) > table > tbody > tr:nth-child(2) > td > a";
 
     const error = "Something went wrong, please try again later";
     try {
         const page = await newPage();
         await page.goto("https://en.wikiquote.org/wiki/Main_Page");
-        await page.waitForXPath(quotePath);
-        const [element1] = await page.$x(quotePath);
+        await page.waitForSelector(quotePath);
+        const [element1] = await page.$$(quotePath);
         const quoteText = await page.evaluate(ele => ele.textContent, element1);
-        const [element2] = await page.$x(authorPath);
+        const [element2] = await page.$$(authorPath);
         const authorName = await page.evaluate(ele => ele.textContent, element2);
-        const emoji1 = "😊❤️️🌞";
-        const emoji2 = "☀️☕➡️️😋";
-        const result = `*${new Date().toDateString()}* ${emoji1}\n${quoteText?.trim()}\n_${authorName?.substring(1, authorName.length - 2).trim()}_\n_Have a Good Day!_ ${emoji2}`;
+        const emoji1 = "😊❤️️";
+        const emoji2 = "☕😋";
+        const result = ` ${emoji1} *${new Date().toDateString()}* ${emoji1}\n${quoteText?.trim()}\n_${authorName?.trim()}_\n${emoji2}_Have a Good Day!_${emoji2}`;
         await page.close();
-        Send.text(message, options, result);
+        Send.formattedText(message, options, result);
     } catch (_) {
         Send.catch(message, error);
     }
