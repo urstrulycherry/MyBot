@@ -12,7 +12,7 @@ export const LINUX = {
 };
 
 export const PUPPETEER_ARGS: PuppeteerLaunchOptions = {
-    headless: "new",
+    headless: true,
     args: ["--no-sandbox"]
 };
 
