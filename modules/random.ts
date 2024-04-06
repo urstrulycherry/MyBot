@@ -1,7 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
 import { React } from "../util/reply";
 
-const process = async (message: WAWebJS.Message, client: WAWebJS.Client, _options: WAWebJS.MessageSendOptions) => {
+const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, _options: WAWebJS.MessageSendOptions) => {
     console.log("Random");
     const chat: WAWebJS.Chat = await message.getChat();
     if (!chat.isGroup) return React.error(message);
@@ -10,8 +10,7 @@ const process = async (message: WAWebJS.Message, client: WAWebJS.Client, _option
 
     const random = Math.floor(Math.random() * participants.length);
     const randomParticipant = participants[random];
-    const randomParticipantContact = await client.getContactById(randomParticipant.id._serialized);
-    message.reply(`Random person @${randomParticipant.id.user}`, undefined, { mentions: [randomParticipantContact] }).then(() => {
+    chat.sendMessage(`Random person @${randomParticipant.id.user}`, { mentions: [randomParticipant.id._serialized] }).then(() => {
         React.success(message);
     }).catch(() => {
         React.error(message);
