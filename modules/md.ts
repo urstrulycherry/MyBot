@@ -16,10 +16,9 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
     }
     links.forEach(link => {
         const url = new URL(link);
-        if (url.hostname === "twitter.com") {
+        if (url.hostname === "twitter.com" || url.hostname === "x.com") {
             tmd(message, options, link);
         } else if (url.hostname === "www.instagram.com") {
-            // send.catch(message, "Instagram is not available right now");
             imd(message, options, link);
         } else if (url.hostname === "www.youtube.com" || url.hostname === "youtu.be" || url.hostname === "youtube.com" || url.hostname === "m.youtube.com") {
             yt(message, options, link);

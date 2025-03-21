@@ -23,7 +23,7 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
 };
 
 const trigger = async (amount: string, cur1: string, cur2: string) => {
-    const url = `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${cur1}/${cur2}.json`.toLowerCase();
+    const url = `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${cur1}.json`.toLowerCase();
     const res = await fetch(url).then((_res) => {
         return _res.json();
     }).then((data) => {
@@ -34,20 +34,17 @@ const trigger = async (amount: string, cur1: string, cur2: string) => {
 
     if (!res) return;
 
-    let msg = `Date: ${res.date}\n1 ${cur1.toUpperCase()} = ${res[cur2]} ${cur2.toUpperCase()}`;
-    if (amount !== "1") msg += `\n${amount} ${cur1.toUpperCase()} = ${(res[cur2] * +amount).toFixed(2)} ${cur2.toUpperCase()}`;
+    let msg = `Date: ${res.date}\n1 ${cur1.toUpperCase()} = ${res[cur1][cur2]} ${cur2.toUpperCase()}`;
+    if (amount !== "1") msg += `\n${amount} ${cur1.toUpperCase()} = ${(res[cur1][cur2] * +amount).toFixed(2)} ${cur2.toUpperCase()}`;
 
     return msg;
 };
 
 const getAmountAndCurrencies = (text: string): (string)[] => {
-    const words = text.trim().split(/\s+/g);
-    let to = (words[words.length - 1] && words[words.length - 1].match(/-\w+/g)) ? words.pop()?.replaceAll("-", "").toLowerCase() : "inr";
-    let from = (words[words.length - 1] && words[words.length - 1].match(/-\w+/g)) ? words.pop()?.replaceAll("-", "").toLowerCase() : "usd";
-    let amount = isNaN(+words[words.length - 1]) ? "1" : words.pop();
-    if (!to) to = "inr";
-    if (!from) from = "usd";
-    if (!amount) amount = "1";
+    const words = text.trim().split(Helper.spliter);
+    const amount = words[0] || "1";
+    const from = (words.length === 3 ? words[1] : "inr").toLowerCase();
+    const to = (words.length >= 2 ? words[words.length - 1] : "usd").toLowerCase();
     return [amount, from, to];
 };
 

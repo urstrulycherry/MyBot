@@ -17,13 +17,16 @@ const process = async (message: WAWebJS.Message, _client: WAWebJS.Client, option
     }
     if (quotedMsg.hasMedia) {
         const media = await quotedMsg.downloadMedia().catch(() => {
-            Send.catch(message);
-            return;
+            return Send.catch(message);
         });
         if (!media) {
             return Send.catch(message);
         }
-        Send.media(message, options, media, messageCaption || quotedMsg.body);
+        if (media instanceof WAWebJS.MessageMedia) {
+            Send.media(message, options, media, messageCaption || quotedMsg.body);
+        } else {
+            return Send.catch(message);
+        }
     } else {
         if (!quotedMsg.body) {
             return Send.catch(message, noMedia);
